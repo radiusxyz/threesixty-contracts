@@ -1,0 +1,13 @@
+node_modules
+artifacts
+cache
+coverage
+
+**/*.scss
+**/*.html
+**/*.json
+**/*.png
+**/*.svg
+.DS_Store
+
+dist/*
