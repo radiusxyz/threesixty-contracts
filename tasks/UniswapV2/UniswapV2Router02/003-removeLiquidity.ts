@@ -3,7 +3,7 @@ import * as types from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber, utils, providers } from "ethers";
 
 // Reference:  https://ethtx.info/0xf4fa7b8764954d1ae3d3c87aa73e47f8d9ab2e0e6eaeac52335d31451eda694b/
-task("routher:removeLiquidity", "")
+task("router:removeLiquidity", "")
   .addParam(
     "routerContractAddress",
     "Router contract address",

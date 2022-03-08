@@ -1,67 +1,38 @@
-# Advanced Sample Hardhat Project
+# Depoloy UniswapV2 with UniswapV2Router02
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+### Deploy CalHash contract contract & get init code hash(Only onece)
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+yarn deploy:calHash
 
-Try running some of the following tasks:
+- Write the contract address to the "WETH9_CONTRACT_ADDRESS" in .env
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
-```
+yarn calcHah
 
-# Etherscan verification
+- It needs to calcuate init code hash for using in "UniswapV2Library.sol"
+- Update UniswapV2Library.sol at the line which exists comment as "// init code hash" without "0x"
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+### Deploy WETH contract
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+yarn deploy:weth
 
-```shell
-hardhat run --network ropsten scripts/sample-script.ts
-```
+- Write the contract address to the "WETH9_CONTRACT_ADDRESS" in .env
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+### Deploy UniswapV2Factory contract
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
+yarn deploy:uniswapV2Factory
 
-# Performance optimizations
+- Write the contract address to the "FACTORY_CONTRACT_ADDRESS" in .env
 
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
+### Deploy ERC20 contract (x2)
 
-npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
-npx hardhat approve --network formula_l2
-npx hardhat transferFrom --network formula_l2
-npx hardhat transfer --network formula_l2
-npx hardhat permit --network formula_l2 // TODO
+- Write the contract address to the "ERC20_CONTRACT_ADDRESS" and "ERC20_CONTRACT_ADDRESS2" in .env
 
-npx hardhat deploy --network formula_l2 --tags UniswapV2Pair --show-stack-traces
-npx hardhat mint --network formula_l2
-npx hardhat getReserves --network formula_l2
-npx hardhat swap --network formula_l2
-npx hardhat burn --network formula_l2
-npx hardhat skim --network formula_l2
+### Deploy UniswapV2Router02 contract
 
-npx hardhat deploy --network formula_l2 --tags UniswapV2Factory --show-stack-traces
-npx hardhat createPair --network formula_l2
-npx hardhat setFeeToSetter --network formula_l2
-npx hardhat setFeeTo --network formula_l2
+yarn deploy:router
 
-npx hardhat deploy --network formula_l2 --tags FswapPair --show-stack-traces
-npx hardhat deploy --network formula_l2 --tags FswapFactory --show-stack-traces
+- Write the contract address to the "ROUTER_CONTRACT_ADDRESS" in .env
+
+### Add liqudity
+
+yarn router:addLiquidity

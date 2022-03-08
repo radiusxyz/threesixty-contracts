@@ -2,7 +2,7 @@ import { task } from "hardhat/config";
 import * as types from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber, utils, providers } from "ethers";
 
-task("routher:swapExactTokensForTokens", "")
+task("router:swapExactTokensForTokens", "")
   .addParam(
     "routerContractAddress",
     "Router contract address",
