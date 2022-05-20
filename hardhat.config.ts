@@ -96,15 +96,15 @@ const config: HardhatUserConfig = {
     deployments: "./deployments",
   },
   networks: {
-    formula_l1: {
-      url: process.env.FORMULA_L1_URL || "",
+    tex_l1: {
+      url: process.env.TEX_L1_URL || "",
       accounts: [
         process.env.PRIVATE_KEY as any,
         process.env.PRIVATE_KEY2 as any,
       ],
     },
-    formula_l2: {
-      url: process.env.FORMULA_L2_URL || "",
+    tex_l2: {
+      url: process.env.TEX_L2_URL || "",
       accounts: [
         process.env.PRIVATE_KEY as any,
         process.env.PRIVATE_KEY2 as any,

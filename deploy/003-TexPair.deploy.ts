@@ -9,12 +9,8 @@ const deployFn: DeployFunction = async (hre: any) => {
     bTokenContractAddress,
   } = hre.deployConfig;
 
-  const UniswapV2Factory = await hre.ethers.getContractFactory(
-    "UniswapV2Factory"
-  );
-  const uniswapV2Factory = await UniswapV2Factory.attach(
-    uniswapV2FactoryAddress
-  );
+  const TexFactory = await hre.ethers.getContractFactory("TexFactory");
+  const uniswapV2Factory = await TexFactory.attach(uniswapV2FactoryAddress);
 
   await uniswapV2Factory.createPair(
     aTokenContractAddress,
@@ -25,10 +21,10 @@ const deployFn: DeployFunction = async (hre: any) => {
     bTokenContractAddress
   );
 
-  console.log("UniswapV2Pair deployed to:", uniswapV2PairAddress);
+  console.log("TexPair deployed to:", uniswapV2PairAddress);
   console.log("Current pair count:", await uniswapV2Factory.allPairsLength());
 };
 
-deployFn.tags = ["UniswapV2Pair"];
+deployFn.tags = ["TexPair"];
 
 export default deployFn;

@@ -1,7 +1,9 @@
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
 const deployFn: DeployFunction = async (hre: any) => {
-  const CalHash: any = await hre.ethers.getContractFactory("CalHash");
+  const CalHash: any = await hre.ethers.getContractFactory(
+    "contracts/Tex/CalHash.sol:CalHash"
+  );
 
   const calHash = await CalHash.deploy();
   await calHash.deployed();

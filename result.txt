@@ -1,0 +1,418 @@
+ 1702  npx hardhat
+ 1703  npx hardhat test
+ 1704  npx hardhat console\n
+ 1709  npx hardhat --network optimistic test
+ 1710  npx hardhat --network optimistic console\n
+ 1723  npx hardhat node
+ 1726  npx hardhat node
+ 1731  npx hardhat node
+ 2255  npx hardhat
+ 2256  npx hardhat accounts
+ 2258  npx hardhat node
+ 2298  npx hardhat
+ 2301  npx hardhat accounts
+ 2313  npx hardhat accounts
+ 2318  npx hardhat
+ 2321  npx hardhat
+ 2328  npx hardhat accounts
+ 2329  npx hardhat node
+ 2330  npx harhat run scripts/sample-script.js
+ 2331  npx harhat run scripts/sample-script.js --network localhost
+ 2332  npx hardhat compile
+ 2334  npx hardhat clean
+ 2336  npx hardhat compile
+ 2371  npx hardhat node --help
+ 2372  npx hardhat node --port 9000
+ 2380  npx hardhat run --help
+ 2381  npx hardhat run --network localhost:9000 scripts/sample-script.js
+ 2382  npx hardhat run --network localhost scripts/sample-script.js
+ 2386  npx hardhat console
+ 2388  npx hardhat node --help
+ 2389  npx hardhat node --port 9000
+ 2390  npx hardhat --network stompesi run scripts/sample-script.js
+ 2403  npx compile
+ 2404  npx hardhat compile
+ 2405  npx hardhat run --network kovan deploy/002-OVM_ChainStorageContainer_ctc_batches.deploy.ts
+ 2423  npx hardhat --help
+ 2434  history | grep npx
+ 2453  npx hardhat deploy --network stompesi --tags ERC20\n
+ 2455  npx hardhat deploy --help
+ 2456  npx hardhat --help
+ 2469  npx hardhat --help
+ 2474  npx hardhat --version
+ 2476  npx hardhat --help
+ 2486  npx hardhat --help
+ 2491  npx hardhat --help
+ 2494  npx hardhat --help
+ 2510  npx hardhat --network kovan deploy
+ 2511  npx hardhat --show-stack-traces
+ 2512  npx hardhat --network kovan deploy --show-stack-traces
+ 2523  npx hardhat --help
+ 2525  npx hardhat --help
+ 2527  npx hardhat --help
+ 2529  npx hardhat --help
+ 2531  npx hardhat --help
+ 2533  npx hardhat --help
+ 2535  npx hardhat --help
+ 2537  npx hardhat --help
+ 2539  npx hardhat --help
+ 2541  npx hardhat --help
+ 2543  npx hardhat --help
+ 2545  npx hardhat --help
+ 2547  npx hardhat --help
+ 2549  npx hardhat deploy
+ 2550  npx hardhat accounts
+ 2554  npx hardhat --help
+ 2555  npx hardhat task_name --acount hihi
+ 2556  npx hardhat task_name --account hihi
+ 2804  npx hardhat compile --show-stack-traces
+ 2808  npx tsc -p ./tsconfig.build.json
+ 2811  npx ts-node bin/deploy.ts
+ 2829  npx hardhat compile --show-stack-traces
+ 2832  npx hardhat compile --show-stack-traces
+ 2838  npx ts-node scripts/generate-artifacts.ts
+ 2839  npx ts-node scripts/generate-deployed-artifacts.ts
+ 2840  npx hardhat --help
+ 2841  npx hardhat --network stompesi export-artifacts
+ 2842  npx hardhat export-artifacts --network stompesi
+ 2843  npx hardhat export-artifacts
+ 2844  npx hardhat export-artifacts --network stompesi ./dest
+ 2852  npx hardhat deploy --help
+ 2853  npx hardhat deploy --export --network stompesi
+ 2854  npx hardhat deploy --export stom --network stompesi
+ 2855  npx hardhat deploy --network stompesi
+ 2915  npx hardhat deploy \\n --l1-block-time-seconds 15 \\n --ctc-max-transaction-gas-limit 15000000 \\n --ctc-l2-gas-discount-divisor 32 \\n --ctc-enqueue-gas-cost 60000 \\n --scc-fraud-proof-window 10 \\n --scc-sequencer-publish-window 12592000 \\n --ovm-sequencer-address 0x2578F573c28B53c088C928e5722FD944e2279EC6 \\n --ovm-proposer-address 0xCCc379b885ABA6820304E8eC9DC979Bdd8941b6e \\n --ovm-address-manager-owner 0x96E25BeAaC514FC0CFEEbAe9f4690434BBD8e615 \\n --gasprice 1000000000 \\n --num-deploy-confirmations 1 \\n --tags upgrade \\n --network stompesi
+ 2954  npx hardhat help
+ 2955  npx hardhat deploy \\n  --network stompesi
+ 2956  npx hardhat help
+ 2962  npx hardhat deploy \\n  --network stompesi 001-Lib_AddressManager.deploy
+ 2963  npx hardhat --network stompesi deploy
+ 2964  npx hardhat deploy --network stompesi --tags Lib_AddressManager
+ 2966  npx hardhat deploy --network stompesi --tags Lib_AddressManager
+ 2967  npx hardhat deploy --network stompesi
+ 2980  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export
+ 2987  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export ./deployments/stompesi
+ 2993  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export ../deployments/stompesi
+ 3000  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export ./deployments/stompesi
+ 3005  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export ./deployments/stompesi
+ 3006  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export-all
+ 3007  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export-all ./deployments/stompesi
+ 3008  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export-all ./deployments/stompesi/Lib_AddressManager.json
+ 3009  npx hardhat deploy --network stompesi --tags Lib_AddressManager --export ./deployments/stompesi/Lib_AddressManager.json
+ 3010  npx hardhat deploy --network stompesi
+ 3011  CONTRACTS_TARGET_NETWORK=stompesi \\nnpx hardhat deploy \\n --l1-block-time-seconds 15 \\n --ctc-max-transaction-gas-limit 15000000 \\n --ctc-l2-gas-discount-divisor 32 \\n --ctc-enqueue-gas-cost 60000 \\n --scc-fraud-proof-window 10 \\n --scc-sequencer-publish-window 12592000 \\n --ovm-sequencer-address 0x2578F573c28B53c088C928e5722FD944e2279EC6 \\n --ovm-proposer-address 0xCCc379b885ABA6820304E8eC9DC979Bdd8941b6e \\n --ovm-address-manager-owner 0x96E25BeAaC514FC0CFEEbAe9f4690434BBD8e615 \\n --gasprice 1000000000 \\n --num-deploy-confirmations 1 \\n --tags upgrade \\n --network stompesi
+ 3012  npx hardhat deploy --network stompesi --tags Lib_AddressManager
+ 3013  npx hardhat deploy --network stompesi
+ 3055  npx hardhat deploy --network stompesi
+ 3056  npx hardhat deploy --network stompesi --tags Proxy__OVM_L1StandardBridge
+ 3057  npx hardhat deploy --network stompesi
+ 3069  npx hardhat deploy --network stompesi
+ 3084  npx hardhat deploy --network stompesi
+ 3085  npx hardhat deploy --network stompesi --tags Lib_AddressManager
+ 3086  npx hardhat deploy --network stompesi --tags Proxy__OVM_L1StandardBridge
+ 3087  npx hardhat deploy --network stompesi
+ 3088  npx hardhat deploy --network stompesi --tags Proxy__OVM_L1StandardBridge
+ 3089  npx hardhat deploy --network stompesi
+ 3090  npx hardhat deploy --network stompesi --tags set-addresses
+ 3091  npx hardhat deploy --network stompesi --tags upgrade
+ 3092  npx hardhat deploy --network stompesi --tags finalize
+ 3201  npx hardhat compile
+ 3203  npx hardhat compile
+ 3205  npx hardhat compile
+ 3207  npx hardhat compile
+ 3208  npx hardhat compile --show-stack-traces
+ 3224  npx hardhat compile --show-stack-traces
+ 3225  npx hardhat compile --show-stack-traces --network stompesi
+ 3228  npx tsc -p ./tsconfig.build.json
+ 3245  npx tsc -p ./tsconfig.build.json
+ 3246  npx hardhat compile
+ 3247  npx tsc -p ./tsconfig.build.json
+ 3252  npx tsc -p ./tsconfig.build.json
+ 3254  npx tsc -p ./tsconfig.build.json
+ 3256  npx tsc -p ./tsconfig.build.json
+ 3260  npx hardhat deploy --network stompesi
+ 3319  npx ts-node scripts/generate-deployed-artifacts.ts
+ 3335  npx tsc --build
+ 3343  npx ts-node ./src/services/run.ts
+ 3356  npx ts-node ./src/services/run.ts
+ 3358  npx ts-node ./src/services/run.ts
+ 3638  npx lerna publish
+ 3784  npx ts-node bin/take-dump.ts
+ 3795  npx hardhat compile --show-stack-traces
+ 3796  npx ts-node scripts/generate-artifacts.ts 
+ 3797  npx ts-node scripts/generate-deployed-artifacts.ts
+ 3798  npx tsc -p ./tsconfig.build.json
+ 3830  npx hardhat compile --show-stack-traces
+ 3831  npx hardhat clean
+ 3832  npx hardhat compile --show-stack-traces
+ 3833  npx ts-node scripts/generate-artifacts.ts 
+ 3834  npx ts-node scripts/generate-deployed-artifacts.ts
+ 3840  npx ts-node scripts/generate-artifacts.ts 
+ 3841  npx ts-node scripts/generate-deployed-artifacts.ts~
+ 3915  npx hardhat --version
+ 3919  npx hardhat --version
+ 3977  npx ts-node test/shared/config.ts
+ 4066  npx hardhat --version
+ 4068  npx hardhat compile --network optimism
+ 4073  npx hardhat compile --network optimism
+ 4178  npx hardhat --network optimism compile
+ 4181  npx hardhat --network optimism compile
+ 4239  npx hardhat compile --show-stack-traces
+ 4241  npx hardhat compile --show-stack-traces
+ 4244  npx hardhat compile --show-stack-traces
+ 4272  npx hardhat compile --network optimistic
+ 4274  npx hardhat run scripts/sample-script.js
+ 4275  npx hardhat test
+ 4276  npx hardhat test --network stompesi
+ 4277  npx hardhat test --network optimistic
+ 4317  npx hardhat run scripts/deploy-standard-token.js --network optimistic
+ 4318  npx hardhat compile --network optimistic
+ 4319  npx hardhat run scripts/deploy-standard-token.js --network optimistic
+ 4634  npx hardhat
+ 4641  npx hardhat
+ 4651  npx hardhat test
+ 4673  npx hardhat compile --network stompesi-l2
+ 4674  npx hardhat compile --network stompesi_l2
+ 4676  npx hardhat compile --network stompesi_l2
+ 4677  npx hardhat clean --network stompesi_l2
+ 4679  npx hardhat clean
+ 4680  npx hardhat compile --network stompesi_l1
+ 4681  npx hardhat clean
+ 4682  npx hardhat compile --network stompesi_l1
+ 4683  npx hardhat clean
+ 4684  npx hardhat compile --network stompesi_l2
+ 4687  npx hardhat compile --network stompesi_l2
+ 4688  npx hardhat clean
+ 4689  npx hardhat compile
+ 4690  npx hardhat compile --network stompesi_l2
+ 4691  npx hardhat test --network stompesi_l2
+ 4692  npx hardhat node
+ 4693  npx hardhat test --network stompesi_l2
+ 4696  npx hardhat test --network stompesi_l2
+ 4698  npx hardhat test --network stompesi_l2
+ 4700  npx hardhat test --network stompesi_l2
+ 4712  npx install-peerdeps --dev eslint-config-airbnb-base
+ 4722  npx hardhat --network stompesi_l2 run deploy/001-UniswapV2Factory.deploy.ts
+ 4723  npx hardhat help
+ 4724  npx hardhat deploy --network stompesi_l2 --tags UniswapV2Factory
+ 4725  npx hardhat help
+ 4726  npx hardhat deploy --network stompesi_l2 --tags UniswapV2Factory
+ 4727  npx hardhat deploy --network stompesi_l1 --tags UniswapV2Factory
+ 4728  npx hardhat deploy --network stompesi_l2 --tags UniswapV2Factory
+ 4729  npx hardhat deploy --network stompesi_l2 --tags ERC20
+ 4730  npx hardhat compile --network stompesi_l2
+ 4731  npx hardhat deploy --network stompesi_l2 --tags ERC20
+ 4732  npx hardhat clean
+ 4733  npx hardhat compile --network stompesi_l2
+ 4734  npx hardhat deploy --network stompesi_l2 --tags ERC20
+ 4735  npx hardhat deploy --network stompesi_l1 --tags ERC20
+ 4736  npx hardhat deploy --network stompesi_l1 --tags ERC20 --show-stack-traces
+ 4737  npx hardhat deploy --network stompesi_l2 --tags ERC20 --show-stack-traces
+ 4738  npx hardhat deploy --network stompesi_l2 --tags ERC20
+ 4739  npx hardhat deploy --network stompesi_l2 --tags ERC20 --show-stack-traces
+ 4741  npx hardhat deploy --network stompesi_l2 --tags ERC20 --show-stack-traces
+ 4742  npx hardhat deploy --network stompesi_l2 --tags UniswapV2Pair --show-stack-traces
+ 4743  npx hardhat deploy --network zedi_l2 --tags UniswapV2Pair --show-stack-traces
+ 4744  npx hardhat clean
+ 4745  npx hardhat deploy --network zedi_l2 --tags UniswapV2Factory --show-stack-traces
+ 4746  npx hardhat compile --network zedi_l2
+ 4747  npx hardhat deploy --network zedi_l2 --tags UniswapV2Factory --show-stack-traces
+ 4748  npx hardhat deploy --network zedi_l2 --tags UniswapV2Pair --show-stack-traces
+ 4749  npx hardhat deploy --network zedi_l2 --tags ERC20 --show-stack-traces
+ 4750  npx hardhat deploy --network zedi_l2 --tags UniswapV2Pair --show-stack-traces
+ 4751  npx hardhat deploy --network zedi_l2 --tags ERC20 --show-stack-traces
+ 4752  npx hardhat deploy --network zedi_l2 --tags UniswapV2Pair --show-stack-traces
+ 4753  npx hardhat --help
+ 4754  npx hardhat approve --help
+ 4755  npx hardhat approve --help --network zedi_l2
+ 4756  npx hardhat approve --network zedi_l2
+ 4757  npx hardhat approve --network zedi_l2 --amount 1000
+ 4758  npx hardhat transfer --network zedi_l2
+ 4759  npx hardhat transfer --network zedi_l2 --amount 1000
+ 4760  npx hardhat transferFrom --network zedi_l2 --amount 1000
+ 4761  npx hardhat approve --network zedi_l2 --amount 1000
+ 4762  npx hardhat accounts
+ 4763  npx hardhat approve --network zedi_l2 --amount 1000
+ 4764  npx hardhat transfer --network zedi_l2 --amount 1000
+ 4765  npx hardhat transferFrom --network zedi_l2 --amount 1000
+ 4766  npx hardhat approve --network zedi_l2 --amount 1000
+ 4767  npx hardhat transferFrom --network zedi_l2 --amount 1000
+ 4768  npx hardhat transfer --network zedi_l2 --amount 1000
+ 4769  npx hardhat mint --network zedi_l2 --amount 1000
+ 4770  npx hardhat mint --network zedi_l2
+ 4771  npx hardhat mint --network zedi_l2 --amount 1000
+ 4772  npx hardhat mint --network zedi_l2
+ 4773  npx hardhat swap --network zedi_l2
+ 4774  npx hardhat burn --network zedi_l2
+ 4775  npx hardhat getReserves --network zedi_l2
+ 4776  npx hardhat mint --network zedi_l2
+ 4993  npx tsc --init\n
+ 5471  npx typescrypt-express-starter service
+ 5477  npx typescrypt-express-starter service
+ 5500  npx typescrypt-express-starter service
+ 5505  npx typescrypt-express-starter service
+ 5566  npx typescrypt-express-starter
+ 5568  npx typescrypt-express-starter
+ 5569  npx typescrypt-express-starter test
+ 5570  npx config
+ 5633  npx ts-node serc/server.ts
+ 5646  npx cross-env NODE_ENV=production node dist/server.js
+ 5722  npx ts-node ./src/cli.ts
+ 6990  npx hardhat test --network stompesi_l2
+ 6991  npx hardhat test --network zedi_l2
+ 6993  npx hardhat test --network zedi_l2
+ 6995  npx hardhat mint --network zedi_l2 --amount 1000
+ 6996  npx hardhat mint --network zedi_l2
+ 6997  npx hardhat 0x29de890c941CDbbcF626D44Efd3b2C2BEF35Bb44 --network zedi_l2
+ 6998  npx hardhat swap --network zedi_l2
+ 7019  npx hardhat swap --network zedi_l2
+ 7021  npx hardhat account --network zedi-l2
+ 7022  npx hardhat account --network zedi_l2
+ 7023  npx hardhat account
+ 7024  npx hardhat accounts --network zedi_l2
+ 7032  npx hardhat accounts
+ 7033  npx hardhat --help
+ 7034  npx hardhat accounts
+ 7035  npx hardhat accounts --network formula_l2
+ 7052  npx prettier '**/*.{json,sol,md}' --check
+ 7053  npx prettier '**/*.{json,sol,md}' --write
+ 7055  npx hardhat
+ 7056  npx hardhat --help
+ 7057  npx hardhat accounts --network formula_l2
+ 7059  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
+ 7066  npx hardhat approve --network formula_l2
+ 7067  npx hardhat transferForm --network formula_l2
+ 7068  npx hardhat transferFrom --network formula_l2
+ 7069  npx hardhat transfer --network formula_l2
+ 7070  npx hardhat permit --network formula_l2
+ 7074  npx hardhat mint --network formula_l2
+ 7075  npx hardhat get_reserves --network formula_l2
+ 7076  npx hardhat getReserves --network formula_l2
+ 7077  npx hardhat swap --network formula_l2
+ 7078  npx hardhat burn --network formula_l2
+ 7079  npx hardhat skim --network formula_l2
+ 7080  npx hardhat sync --network formula_l2
+ 7081  npx hardhat deploy --network formula_l2 --tags UniswapV2Factory --show-stack-traces
+ 7082  npx hardhat accounts --network formula_l2
+ 7083  npx hardhat createPair --network formula_l2
+ 7084  npx hardhat deploy --network formula_l2 --tags UniswapV2Factory --show-stack-traces
+ 7085  npx hardhat deploy --network formula_l2 --tags UniswapV2Pair --show-stack-traces
+ 7086  npx hardhat createPair --network formula_l2
+ 7087  npx hardhat setFeeTo --network formula_l2
+ 7088  npx hardhat setFeeToSetter --network formula_l2
+ 7089  npx hardhat setFeeToSetter --network formula_l2 --factoryContractAddress 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+ 7090  npx hardhat setFeeToSetter --network formula_l2 --factory_contract_address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+ 7091  npx hardhat setFeeToSetter --network formula_l2 --help
+ 7092  npx hardhat setFeeToSetter --network formula_l2 --factory-contract-address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+ 7093  npx hardhat setFeeToSetter --network formula_l2 --help
+ 7094  npx hardhat setFeeToSetter --network formula_l2 
+ 7095  npx hardhat setFeeTo --network formula_l2
+ 7096  npx hardhat deploy --network formula_l2 --tags UniswapV2Factory --show-stack-traces
+ 7100  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
+ 7101  npx hardhat build
+ 7102  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
+ 7104  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
+ 7105  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces --verbose
+ 7107  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces --verbose
+ 7108  npx hardhat deploy --network formula_l2 --tags ERC20 --show-stack-traces
+ 7109  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7110  npx hardhat deploy --network formula_l2 --tags TexFactory --show-stack-traces
+ 7111  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7121  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7252  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7268  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7270  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7271  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces 
+ 7272  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces --verbose
+ 7273  npx hardhat compile
+ 7325  npx hardhat compile
+ 7332  npx hardhat compile
+ 7347  npx hardhat compile
+ 7349  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7361  npx hardhat deploy --network formula_l2 --tags TexPair --show-stack-traces
+ 7362  npx hardhat clean
+ 7363  npx hardhat compile
+ 7365  npx hardhat compile
+ 7367  npx hardhat compile
+ 7369  npx hardhat compile
+ 7371  npx hardhat compile
+ 7384  npx hardhat compile
+ 7393  npx hardhat compile
+ 7394  npx hardhat compile --verbose
+ 7395  npx hardhat compile --show-stack-traces
+ 7396  npx hardhat compile --show-stack-traces --network stompesi
+ 7397  npx hardhat compile --show-stack-traces
+ 7412  npx hardhat compile --show-stack-traces
+ 7414  npx hardhat compile --show-stack-traces
+ 7416  npx hardhat compile --show-stack-traces
+ 7439  npx hardhat compile --show-stack-traces
+ 7441  npx hardhat compile --show-stack-traces
+ 7442  npx hardhat deploy --network formula_l2 --tags WETH --show-stack-traces
+ 7443  npx hardhat deploy --network formula_l2 --tags WETH9 --show-stack-traces
+ 7444  npx hardhat deploy --network formula_l2 --tags UniswapV2Factory --show-stack-traces
+ 7445  npx hardhat deploy --network formula_l2 --tags UniswapV2Router02 --show-stack-traces
+ 7446  npx hardhat compile
+ 7448  npx hardhat compile
+ 7452  npx hardhat deploy --network getAmountOut --show-stack-traces
+ 7453  npx hardhat deploy --network getAmountOut --show-stack-traceps
+ 7454  npx hardhat getAmountOut --network formula_l2 --show-stack-traces
+ 7456  npx hardhat getAmountOut --network formula_l2 --show-stack-traces
+ 7457  npx hardhat compile
+ 7458  npx hardhat getAmountOut --network formula_l2 --show-stack-traces
+ 7459  npx hardhat setFeeToSetter --network formula_l2 --factory-contract-address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+ 7461  npx hardhat setFeeToSetter --network formula_l2 --factory-contract-address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+ 7462  npx hardhat getAmountOut --network formula_l2 --show-stack-traces
+ 7463  npx hardhat addLiquidity --network formula_l2 --show-stack-traces
+ 7465  npx hardhat compile
+ 7484  npx hardhat compile
+ 7498  npx hardhat compile
+ 7499  npx hardhat compile --show-stack-traces
+ 7501  npx hardhat compile --show-stack-traces
+ 7502  npx hardhat compile
+ 7518  npx hardhat compile
+ 7520  npx hardhat compile
+ 7524  npx hardhat compile
+ 7526  npx hardhat compile
+ 7528  npx hardhat compile
+ 7535  npx hardhat compile
+ 7539  npx hardhat compile
+ 7541  npx hardhat compile
+ 7543  npx hardhat compile
+ 7550  npx hardhat compile
+ 7555  npx hardhat compile --show-stack-traces
+ 7567  npx hardhat approve --network formula_l2
+ 7568  npx hardhat transfer --network formula_l2
+ 7569  npx hardhat transferFrom --network formula_l2
+ 7575  npx hardhat transfer --network formula_l2
+ 7603  npx hardhat compile
+ 7605  npx hardhat deploy --network formula_l2 --tags WETH --show-stack-traces
+ 7606  npx hardhat deploy --network formula_l2 --tags WETH9 --show-stack-traces
+ 7610  npx hardhat weth:deposit --network formula_l2
+ 7641  npx hardhat deploy --network formula_l2 --tags ERC20PresetFixedSupply --show-stack-traces
+ 7648  npx hardhat deploy --save
+ 7649  npx hardhat deploy --help
+ 7650  npx hardhat deploy --write
+ 7651  npx hardhat deploy --export-all
+ 7652  npx hardhat deploy --network formula_l2 -- tags ERC20PresetFixedSupply --token-name stompesi --token-symbol JB 
+ 7653  npx hardhat deploy --network formula_l2 --tags ERC20PresetFixedSupply --token-name stompesi --token-symbol JB 
+ 7750  npx hardhat compile
+ 7956  npx hardhat clean
+ 9832  npx test batch
+11780* npx hardhat deploy --network matic --tags ERC20
+11782* npx hardhat deploy --network matic --tags ERC20
+11788* npx hardhat deploy --network matic --tags ERC20
+11791* npx hardhat deploy --network matic --tags ERC20
+11802* npx hardhat deploy --network matic --tags ERC20
+11805* npx hardhat deploy --network matic --tags ERC20
+11846  npx hardhat clean
+11847  npx hardhat compile
+11858  npx hardhat compile
+11859  history | grep npx
+
+
+
+
+
+
+npx hardhat compile
+npx hardhat deploy --network matic --tags ERC20
