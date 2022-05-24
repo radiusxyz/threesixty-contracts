@@ -8,26 +8,32 @@ import "hardhat-deploy";
 import "./tasks/deploy";
 import "./tasks/test";
 
-import "./tasks/UniswapV2/ERC20/001-approve";
-import "./tasks/UniswapV2/ERC20/002-transfer";
-import "./tasks/UniswapV2/ERC20/003-transferFrom";
-import "./tasks/UniswapV2/ERC20/004-permit";
+import "./tasks/Tex/ERC20/001-approve";
+import "./tasks/Tex/ERC20/002-transfer";
+import "./tasks/Tex/ERC20/003-transferFrom";
+import "./tasks/Tex/ERC20/004-permit";
 
-import "./tasks/UniswapV2/UniswapV2Factory/001-createPair";
-import "./tasks/UniswapV2/UniswapV2Factory/002-setFeeToSetter";
-import "./tasks/UniswapV2/UniswapV2Factory/003-setFeeTo";
+import "./tasks/Tex/TexFactory/001-createPair";
+import "./tasks/Tex/TexFactory/002-setFeeToSetter";
+import "./tasks/Tex/TexFactory/003-setFeeTo";
 
-import "./tasks/UniswapV2/UniswapV2Pair/001-mint";
-import "./tasks/UniswapV2/UniswapV2Pair/002-get_reserves";
-import "./tasks/UniswapV2/UniswapV2Pair/003-swap";
-import "./tasks/UniswapV2/UniswapV2Pair/004-burn";
-import "./tasks/UniswapV2/UniswapV2Pair/005-skim";
-import "./tasks/UniswapV2/UniswapV2Pair/006-sync";
+import "./tasks/Tex/TexPair/001-mint";
+import "./tasks/Tex/TexPair/002-get_reserves";
+import "./tasks/Tex/TexPair/003-swap";
+import "./tasks/Tex/TexPair/004-burn";
+import "./tasks/Tex/TexPair/005-skim";
+import "./tasks/Tex/TexPair/006-sync";
 
-import "./tasks/UniswapV2/UniswapV2Router02/001-addLiquidity";
-import "./tasks/UniswapV2/UniswapV2Router02/002-addLiquidityETH";
-import "./tasks/UniswapV2/UniswapV2Router02/003-removeLiquidity";
-import "./tasks/UniswapV2/UniswapV2Router02/004-swapExactTokensForTokens";
+import "./tasks/Tex/TexRouter02/001-addLiquidity";
+import "./tasks/Tex/TexRouter02/002-addLiquidityETH";
+import "./tasks/Tex/TexRouter02/003-removeLiquidity";
+import "./tasks/Tex/TexRouter02/004-record";
+import "./tasks/Tex/TexRouter02/005-swapExactTokensForTokens";
+import "./tasks/Tex/TexRouter02/006-recorderState";
+import "./tasks/Tex/TexRouter02/007-approve";
+import "./tasks/Tex/TexRouter02/999-temp_1";
+import "./tasks/Tex/TexRouter02/999-temp_2";
+import "./tasks/Tex/TexRouter02/999-temp_3";
 
 import "./tasks/WETH9/001-deposit";
 import "./tasks/WETH9/002-withdraw";
@@ -108,6 +114,22 @@ const config: HardhatUserConfig = {
       accounts: [
         process.env.PRIVATE_KEY as any,
         process.env.PRIVATE_KEY2 as any,
+      ],
+      gas: 10000000,
+    },
+    matic: {
+      url: process.env.MUMBAI_URL || "",
+      accounts: [
+        process.env.PRIVATE_KEY as any,
+        process.env.PRIVATE_KEY2 as any,
+        process.env.PRIVATE_KEY3 as any,
+        process.env.PRIVATE_KEY4 as any,
+        process.env.PRIVATE_KEY5 as any,
+        process.env.PRIVATE_KEY6 as any,
+        process.env.PRIVATE_KEY7 as any,
+        // process.env.PRIVATE_KEY8 as any,
+        // process.env.PRIVATE_KEY9 as any,
+        // process.env.PRIVATE_KEY10 as any,
       ],
       gas: 10000000,
     },

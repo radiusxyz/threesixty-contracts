@@ -7,8 +7,8 @@
 // import { expandTo18Decimals } from './utilities'
 
 // import ERC20 from '../build/ERC20.json'
-// import UniswapV2Factory from '../build/UniswapV2Factory.json'
-// import UniswapV2Pair from '../build/UniswapV2Pair.json'
+// import TexFactory from '../build/TexFactory.json'
+// import TexPair from '../build/TexPair.json'
 
 // interface FactoryFixture {
 //   factory: Contract
@@ -19,7 +19,7 @@
 // }
 
 // export async function factoryFixture(_: Web3Provider, [wallet]: Wallet[]): Promise<FactoryFixture> {
-//   const factory = await deployContract(wallet, UniswapV2Factory, [wallet.address], overrides)
+//   const factory = await deployContract(wallet, TexFactory, [wallet.address], overrides)
 //   return { factory }
 // }
 
@@ -37,7 +37,7 @@
 
 //   await factory.createPair(tokenA.address, tokenB.address, overrides)
 //   const pairAddress = await factory.getPair(tokenA.address, tokenB.address)
-//   const pair = new Contract(pairAddress, JSON.stringify(UniswapV2Pair.abi), provider).connect(wallet)
+//   const pair = new Contract(pairAddress, JSON.stringify(TexPair.abi), provider).connect(wallet)
 
 //   const token0Address = (await pair.token0()).address
 //   const token0 = tokenA.address === token0Address ? tokenA : tokenB

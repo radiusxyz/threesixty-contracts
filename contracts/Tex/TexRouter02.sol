@@ -357,7 +357,16 @@ contract TexRouter02 is ITexRouter02 {
   {
     require(
       Recorder(recorder).validate(
-        keccak256(abi.encodePacked(amountIn, amountOutMin, path, to, deadline, msg.sender))
+        keccak256(
+          abi.encodePacked(
+            msg.sender,
+            amountIn,
+            amountOutMin,
+            path,
+            to,
+            deadline
+          )
+        )
       ),
       "TX validation is failed!"
     );

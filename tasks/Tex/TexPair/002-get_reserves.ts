@@ -6,26 +6,29 @@ task("getReserves", "Get reserves")
   .addParam(
     "pairContractAddress",
     "Token pair contract address",
-    "0x29de890c941CDbbcF626D44Efd3b2C2BEF35Bb44",
+    process.env.TOKEN_PAIR_CONTRACT_ADDRESS,
     types.string
   )
   .setAction(async (args, hre: any) => {
-    const [from, to] = await hre.ethers.getSigners();
-    const fromAddress = from.address;
-    const toAddress = to.address;
-    const { pairContractAddress, amount } = args;
+    const { pairContractAddress } = args;
 
     const TexPair = await hre.ethers.getContractFactory("TexPair");
     const fswapPair = await TexPair.attach(pairContractAddress);
 
-    const ERC20 = await hre.ethers.getContractFactory(
-      "contracts/Tex/interfaces/IERC20.sol:ERC20"
-    );
+    const ERC20 = await hre.ethers.getContractFactory("WETH9");
     const aTokenContract = await ERC20.attach(await fswapPair.token0());
     const bTokenContract = await ERC20.attach(await fswapPair.token1());
 
-    console.log("aTokenContractAddress: ", aTokenContract.address);
-    console.log("bTokenContractAddress: ", bTokenContract.address);
+    const aTokenName = await aTokenContract.name();
+    const aTokenSymbol = await aTokenContract.symbol();
+    const aTokenAddress = aTokenContract.address;
+
+    const bTokenName = await bTokenContract.name();
+    const bTokenSymbol = await bTokenContract.symbol();
+    const bTokenAddress = bTokenContract.address;
+
+    console.log(`${aTokenName}(${aTokenSymbol}): ${aTokenAddress}`);
+    console.log(`${bTokenName}(${bTokenSymbol}): ${bTokenAddress}`);
     console.log("");
 
     const reserves = await fswapPair.getReserves();
