@@ -12,9 +12,7 @@ task("calHash", "")
   .setAction(async (args, hre: any) => {
     const { contractAddress } = args;
 
-    const CalHash = await hre.ethers.getContractFactory(
-      "contracts/UniswapV2/CalHash.sol:CalHash"
-    );
+    const CalHash = await hre.ethers.getContractFactory("CalHash");
     const calHah = await CalHash.attach(contractAddress);
     console.log(calHah);
 

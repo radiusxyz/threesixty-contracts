@@ -6,7 +6,7 @@ task("mint", "Mint")
   .addParam(
     "pairContractAddress",
     "Token pair contract address",
-    "0x29de890c941CDbbcF626D44Efd3b2C2BEF35Bb44",
+    process.env.TOKEN_PAIR_CONTRACT_ADDRESS,
     types.string
   )
   .setAction(async (args, hre: any) => {
@@ -18,7 +18,7 @@ task("mint", "Mint")
     const TexPair = await hre.ethers.getContractFactory("TexPair");
     const fswapPair = await TexPair.attach(pairContractAddress);
 
-    const ERC20 = await hre.ethers.getContractFactory("ERC20");
+    const ERC20 = await hre.ethers.getContractFactory("WETH9");
     const aTokenContract = await ERC20.attach(await fswapPair.token0());
     const bTokenContract = await ERC20.attach(await fswapPair.token1());
 

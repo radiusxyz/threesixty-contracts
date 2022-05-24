@@ -5,7 +5,7 @@ task("deploy")
   .addOptionalParam(
     "feeToSetterAddress",
     "Fee to setter address",
-    "0x4200000000000000000000000000000000000007", // l2MessengerAddress
+    "0x2578F573c28B53c088C928e5722FD944e2279EC6", // l2MessengerAddress
     types.string
   )
   .setAction(async (args, hre: any, runSuper) => {

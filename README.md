@@ -29,8 +29,8 @@ yarn deploy:calHash
 
 yarn calcHah
 
-- It needs to calcuate init code hash for using in "UniswapV2Library.sol"
-- Update UniswapV2Library.sol at the line which exists comment as "// init code hash" without "0x"
+- It needs to calcuate init code hash for using in "TexLibrary.sol"
+- Update TexLibrary.sol at the line which exists comment as "// init code hash" without "0x"
 
 ### Deploy WETH contract
 
@@ -38,7 +38,7 @@ yarn deploy:weth
 
 - Write the contract address to the "WETH9_CONTRACT_ADDRESS" in .env
 
-### Deploy UniswapV2Factory contract
+### Deploy TexFactory contract
 
 yarn deploy:uniswapV2Factory
 
@@ -48,7 +48,7 @@ yarn deploy:uniswapV2Factory
 
 - Write the contract address to the "ERC20_CONTRACT_ADDRESS" and "ERC20_CONTRACT_ADDRESS2" in .env
 
-### Deploy UniswapV2Router02 contract
+### Deploy TexRouter02 contract
 
 yarn deploy:router
 
@@ -57,9 +57,6 @@ yarn deploy:router
 ### Add liqudity
 
 yarn router:addLiquidity
-
-
-
 
 - Write the contract address to the "WETH9_CONTRACT_ADDRESS" in .env
 
@@ -82,5 +79,3 @@ yarn deploy:router
 ### Add liqudity
 
 yarn router:addLiquidity
-
-

@@ -22,10 +22,10 @@ task("router:addLiquidity", "")
     process.env.ERC20_CONTRACT_ADDRESS2,
     types.string
   )
-  .addParam("amountADesired", "", 10, types.int)
-  .addParam("amountBDesired", "", 10, types.int)
-  .addParam("amountAMin", "", 1, types.int)
-  .addParam("amountBMin", "", 1, types.int)
+  .addParam("amountADesired", "", 1000, types.int)
+  .addParam("amountBDesired", "", 1000, types.int)
+  .addParam("amountAMin", "", 1000, types.int)
+  .addParam("amountBMin", "", 1000, types.int)
   .setAction(async (args, hre: any) => {
     const [sender] = await hre.ethers.getSigners();
     const senderAddress = sender.address;
@@ -43,49 +43,77 @@ task("router:addLiquidity", "")
     amountAMin = BigNumber.from(amountAMin).mul(decimal).toString();
     amountBMin = BigNumber.from(amountBMin).mul(decimal).toString();
 
+    console.log("amountADesired", amountADesired);
+    console.log("amountBDesired", amountBDesired);
+    console.log("amountAMin", amountAMin);
+    console.log("amountBMin", amountBMin);
+
     const TexRouter02 = await hre.ethers.getContractFactory("TexRouter02");
-    const fswapRouter02 = await TexRouter02.attach(routerContractAddress);
+    const texRouter02 = await TexRouter02.attach(routerContractAddress);
 
     const ERC20 = await hre.ethers.getContractFactory("WETH9");
-    const aToken = await ERC20.attach(aTokenContractAddress);
-    const bToken = await ERC20.attach(bTokenContractAddress);
+    const aTokenContract = await ERC20.attach(aTokenContractAddress);
+    const bTokenContract = await ERC20.attach(bTokenContractAddress);
 
-    const aTokenName = await aToken.name();
-    const bTokenName = await bToken.name();
+    const aTokenName = await aTokenContract.name();
+    const aTokenSymbol = await aTokenContract.symbol();
+    const aTokenDecimals = await aTokenContract.decimals();
+    const aTokenAddress = aTokenContract.address;
 
-    // Approve tokens
-    let result = await aToken.approve(routerContractAddress, amountADesired);
-    let receipt = await result.wait();
-    result = await bToken.approve(routerContractAddress, amountBDesired);
-    receipt = await result.wait();
+    const bTokenName = await bTokenContract.name();
+    const bTokenSymbol = await bTokenContract.symbol();
+    const bTokenDecimals = await bTokenContract.decimals();
+    const bTokenAddress = bTokenContract.address;
 
     console.log(`Sener address is ${senderAddress}`);
-    console.log(`${aTokenName} contract address is ${aToken.address}`);
-    console.log(`${bTokenName} contract address is ${bToken.address}`);
-
+    console.log(`Router address is ${routerContractAddress}`);
     console.log(
-      `${aTokenName} balance is ${await aToken.balanceOf(senderAddress)}`
+      `${aTokenName}(${aTokenSymbol}): ${aTokenAddress} / decimals: ${aTokenDecimals}`
     );
     console.log(
-      `${aTokenName} allowance is ${await aToken.allowance(
-        senderAddress,
+      `${bTokenName}(${bTokenSymbol}): ${bTokenAddress} / decimals: ${bTokenDecimals}`
+    );
+
+    // Approve tokens
+    let result = await aTokenContract.approve(
+      routerContractAddress,
+      amountADesired
+    );
+    let receipt = await result.wait();
+
+    result = await bTokenContract.approve(
+      routerContractAddress,
+      amountBDesired
+    );
+    receipt = await result.wait();
+
+    console.log(
+      `${aTokenName} balance is ${await aTokenContract.balanceOf(
         senderAddress
+      )}`
+    );
+    console.log(
+      `${aTokenName} allowance is ${await aTokenContract.allowance(
+        senderAddress,
+        routerContractAddress
       )}`
     );
     console.log();
 
     console.log(
-      `${bTokenName} balance is ${await bToken.balanceOf(senderAddress)}`
+      `${bTokenName} balance is ${await bTokenContract.balanceOf(
+        senderAddress
+      )}`
     );
     console.log(
-      `${bTokenName} allowance is ${await bToken.allowance(
+      `${bTokenName} allowance is ${await bTokenContract.allowance(
         senderAddress,
-        senderAddress
+        routerContractAddress
       )}`
     );
     console.log();
 
-    result = await fswapRouter02.addLiquidity(
+    result = await texRouter02.addLiquidity(
       aTokenContractAddress,
       bTokenContractAddress,
       amountADesired,
@@ -97,20 +125,20 @@ task("router:addLiquidity", "")
     );
     receipt = await result.wait();
 
-    const factoryContractAddress = await fswapRouter02.factory();
+    const factoryContractAddress = await texRouter02.factory();
     console.log(`factoryContractAddress: ${factoryContractAddress}`);
 
     const TexFactory = await hre.ethers.getContractFactory("TexFactory");
-    const fswapFactory = await TexFactory.attach(factoryContractAddress);
-    const pairContractAddress = await fswapFactory.getPair(
+    const texFactory = await TexFactory.attach(factoryContractAddress);
+    const pairContractAddress = await texFactory.getPair(
       aTokenContractAddress,
       bTokenContractAddress
     );
 
     const TexPair = await hre.ethers.getContractFactory("TexPair");
-    const fswapPair = await TexPair.attach(pairContractAddress);
+    const texPair = await TexPair.attach(pairContractAddress);
 
-    const reserves = await fswapPair.getReserves();
+    const reserves = await texPair.getReserves();
     console.log(`Reserve ${reserves[0]} / ${reserves[1]}`);
     // console.log(receipt);
   });

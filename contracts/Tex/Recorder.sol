@@ -2,8 +2,6 @@
 pragma solidity ^0.6.6;
 
 contract Recorder {
-  mapping(uint256 => bytes32) public txHashList;
-
   uint256 public currentRound;
   uint256 public currentIndex;
 
@@ -30,8 +28,6 @@ contract Recorder {
     if (roundTxIdList[currentRound][currentIndex] == _txId) return true;
     return false;
   }
-
-  ethers.utils.solidityKeccak256(["uint256","address"],["1000", owner.address]);
 
   function goForward() public {
     emit Commit(currentRound, currentIndex);

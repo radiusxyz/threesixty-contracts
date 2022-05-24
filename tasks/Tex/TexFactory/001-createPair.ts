@@ -30,6 +30,8 @@ task("factory:createPair", "Create pair")
     const TexFactory = await hre.ethers.getContractFactory("TexFactory");
     const fswapFactory = await TexFactory.attach(factoryContractAddress);
 
+    console.log(`A Token Contract ${aTokenContractAddress}`);
+    console.log(`B Token Contract ${bTokenContractAddress}`);
     await fswapFactory.createPair(aTokenContractAddress, bTokenContractAddress);
 
     const fswapPairAddress = await fswapFactory.getPair(
