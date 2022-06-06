@@ -27,13 +27,19 @@ import "./tasks/Tex/TexPair/006-sync";
 import "./tasks/Tex/TexRouter02/001-addLiquidity";
 import "./tasks/Tex/TexRouter02/002-addLiquidityETH";
 import "./tasks/Tex/TexRouter02/003-removeLiquidity";
-import "./tasks/Tex/TexRouter02/004-record";
-import "./tasks/Tex/TexRouter02/005-swapExactTokensForTokens";
 import "./tasks/Tex/TexRouter02/006-recorderState";
 import "./tasks/Tex/TexRouter02/007-approve";
-import "./tasks/Tex/TexRouter02/999-temp_1";
-import "./tasks/Tex/TexRouter02/999-temp_2";
-import "./tasks/Tex/TexRouter02/999-temp_3";
+
+import "./tasks/Hackathon/001-tex_verify";
+import "./tasks/Hackathon/002-tex_decrypt";
+import "./tasks/Hackathon/003-tex_add_tx_ids";
+import "./tasks/Hackathon/004-tex_check_order";
+import "./tasks/Hackathon/005-tex_swap";
+
+import "./tasks/Hackathon/999-temp_1";
+import "./tasks/Hackathon/999-temp_2";
+import "./tasks/Hackathon/999-temp_3";
+import "./tasks/Hackathon/999-tex_encrypt";
 
 import "./tasks/WETH9/001-deposit";
 import "./tasks/WETH9/002-withdraw";
@@ -53,9 +59,6 @@ import "solidity-coverage";
 
 // Check "https://hardhat.org/config/"
 const config: HardhatUserConfig = {
-  ovm: {
-    solcVersion: "0.5.16",
-  },
   solidity: {
     compilers: [
       {
@@ -102,31 +105,34 @@ const config: HardhatUserConfig = {
     deployments: "./deployments",
   },
   networks: {
-    tex_l1: {
-      url: process.env.TEX_L1_URL || "",
+    optimism_kovan: {
+      url: process.env.OPTIMISM_KOVAN_URL || "",
       accounts: [
-        process.env.PRIVATE_KEY as any,
+        // process.env.OPERATOR_PRIVATE_KEY as any,
+        process.env.PRIVATE_KEY1 as any,
         process.env.PRIVATE_KEY2 as any,
-      ],
-    },
-    tex_l2: {
-      url: process.env.TEX_L2_URL || "",
-      accounts: [
-        process.env.PRIVATE_KEY as any,
-        process.env.PRIVATE_KEY2 as any,
+        // process.env.PRIVATE_KEY3 as any,
+        // process.env.PRIVATE_KEY4 as any,
+        // process.env.PRIVATE_KEY5 as any,
+        // process.env.PRIVATE_KEY6 as any,
+        // process.env.PRIVATE_KEY7 as any,
+        // process.env.PRIVATE_KEY8 as any,
+        // process.env.PRIVATE_KEY9 as any,
+        // process.env.PRIVATE_KEY10 as any,
       ],
       gas: 10000000,
     },
-    matic: {
-      url: process.env.MUMBAI_URL || "",
+    matic_mumbai: {
+      url: process.env.MATIC_MUMBAI_URL || "",
       accounts: [
-        process.env.PRIVATE_KEY as any,
+        // process.env.OPERATOR_PRIVATE_KEY as any,
+        process.env.PRIVATE_KEY1 as any,
         process.env.PRIVATE_KEY2 as any,
-        process.env.PRIVATE_KEY3 as any,
-        process.env.PRIVATE_KEY4 as any,
-        process.env.PRIVATE_KEY5 as any,
-        process.env.PRIVATE_KEY6 as any,
-        process.env.PRIVATE_KEY7 as any,
+        // process.env.PRIVATE_KEY3 as any,
+        // process.env.PRIVATE_KEY4 as any,
+        // process.env.PRIVATE_KEY5 as any,
+        // process.env.PRIVATE_KEY6 as any,
+        // process.env.PRIVATE_KEY7 as any,
         // process.env.PRIVATE_KEY8 as any,
         // process.env.PRIVATE_KEY9 as any,
         // process.env.PRIVATE_KEY10 as any,
