@@ -1,4 +1,4 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config();
 
 import { HardhatUserConfig } from "hardhat/config";
@@ -30,16 +30,16 @@ import "./tasks/Tex/TexRouter02/003-removeLiquidity";
 import "./tasks/Tex/TexRouter02/006-recorderState";
 import "./tasks/Tex/TexRouter02/007-approve";
 
-import "./tasks/Hackathon/001-tex_verify";
-import "./tasks/Hackathon/002-tex_decrypt";
-import "./tasks/Hackathon/003-tex_add_tx_ids";
-import "./tasks/Hackathon/004-tex_check_order";
-import "./tasks/Hackathon/005-tex_swap";
+// import "./tasks/Hackathon/001-tex_verify";
+// import "./tasks/Hackathon/002-tex_decrypt";
+// import "./tasks/Hackathon/003-tex_add_tx_ids";
+// import "./tasks/Hackathon/004-tex_check_order";
+// import "./tasks/Hackathon/005-tex_swap";
 
-import "./tasks/Hackathon/999-temp_1";
-import "./tasks/Hackathon/999-temp_2";
-import "./tasks/Hackathon/999-temp_3";
-import "./tasks/Hackathon/999-tex_encrypt";
+// import "./tasks/Hackathon/999-temp_1";
+// import "./tasks/Hackathon/999-temp_2";
+// import "./tasks/Hackathon/999-temp_3";
+// import "./tasks/Hackathon/999-tex_encrypt";
 
 import "./tasks/WETH9/001-deposit";
 import "./tasks/WETH9/002-withdraw";
@@ -97,6 +97,15 @@ const config: HardhatUserConfig = {
           },
         },
       },
+      {
+        version: "0.6.0",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
+      },      
     ],
     overrides: {},
   },
@@ -128,6 +137,23 @@ const config: HardhatUserConfig = {
         // process.env.OPERATOR_PRIVATE_KEY as any,
         process.env.PRIVATE_KEY1 as any,
         process.env.PRIVATE_KEY2 as any,
+        // process.env.PRIVATE_KEY3 as any,
+        // process.env.PRIVATE_KEY4 as any,
+        // process.env.PRIVATE_KEY5 as any,
+        // process.env.PRIVATE_KEY6 as any,
+        // process.env.PRIVATE_KEY7 as any,
+        // process.env.PRIVATE_KEY8 as any,
+        // process.env.PRIVATE_KEY9 as any,
+        // process.env.PRIVATE_KEY10 as any,
+      ],
+      gas: 10000000,
+    },
+    DEV: {
+      url: process.env.DEV_URL || "",
+      accounts: [
+        process.env.PRIV_KEY0 as any,
+        process.env.PRIV_KEY1 as any,
+        process.env.PRIV_KEY2 as any,
         // process.env.PRIVATE_KEY3 as any,
         // process.env.PRIVATE_KEY4 as any,
         // process.env.PRIVATE_KEY5 as any,
