@@ -33,12 +33,14 @@ async function main() {
   console.log("FeeToSetterAddress:", process.env.ACCOUNT0);
 
   const TexRouter02 = await ethers.getContractFactory("TexRouter02");
-  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address);
+  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, process.env.ACCOUNT0);
   await texRouter02.deployed();
   console.log("TexRouter02 deployed to:", texRouter02.address);
+  await texRouter02.setFeeTo(process.env.ACCOUNT0);
 
   await texFactory.createPair(erc20_1.address, erc20_2.address);
-  const PairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
+  const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
+  console.log("pairAddress:", pairAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -1,3 +1,5 @@
+
+pragma experimental ABIEncoderV2;
 pragma solidity =0.6.6;
 
 import "./interfaces/ITexFactory.sol";
@@ -19,6 +21,29 @@ contract TexRouter02 is ITexRouter02 {
 
   address public immutable recorder;
 
+  address public feeTo;
+  address public feeToSetter;
+
+  struct EIP712Domain {
+    string  name;
+    string  version;
+    uint256 chainId;
+    address verifyingContract;
+  }
+
+  struct Swap {
+    address txOwner;
+    uint256 amountIn;
+    uint256 amountOutMin;
+    address[] path;
+    address to;
+    uint256 deadline;
+  }
+
+  bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)");
+  bytes32 public DOMAIN_SEPARATOR;
+
   modifier ensure(uint256 deadline) {
     require(deadline >= block.timestamp, "TexRouter: EXPIRED");
     _;
@@ -27,15 +52,57 @@ contract TexRouter02 is ITexRouter02 {
   constructor(
     address _recorder,
     address _factory,
-    address _WETH
+    address _WETH,
+    address _feeToSetter
   ) public {
     recorder = _recorder;
     factory = _factory;
     WETH = _WETH;
+    feeToSetter = _feeToSetter;
+
+    DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
+      name: "Tex swap",
+      version: "1",
+      chainId: 17,
+      verifyingContract: address(this)
+    }));  
   }
 
   receive() external payable {
     assert(msg.sender == WETH); // only accept ETH via fallback from the WETH contract
+  }
+
+  function setFeeTo(address _feeTo) external {
+    require(msg.sender == feeToSetter, "Tex: FORBIDDEN");
+    feeTo = _feeTo;
+  }
+
+  function setFeeToSetter(address _feeToSetter) external {
+    require(msg.sender == feeToSetter, "Tex: FORBIDDEN");
+    feeToSetter = _feeToSetter;
+  }
+
+  function _generateHashedMessage(EIP712Domain memory eip712Domain) internal pure returns (bytes32) {
+    return keccak256(abi.encode(
+      EIP712DOMAIN_TYPEHASH,
+      keccak256(bytes(eip712Domain.name)),
+      keccak256(bytes(eip712Domain.version)),
+      eip712Domain.chainId,
+      eip712Domain.verifyingContract
+    ));
+  }
+
+  function _generateHashedMessage(Swap memory swap) internal pure returns (bytes32) {
+    return keccak256(abi.encode(
+      SWAPDOMAIN_TYPEHASH,
+      swap.txOwner,
+      swap.amountIn,
+      swap.amountOutMin,
+      keccak256(abi.encodePacked(swap.path)),
+      swap.to,
+      swap.deadline
+      // nonces[swap.txOwner]++ // TODO: import nonce
+    ));
   }
 
   // **** ADD LIQUIDITY ****
@@ -342,6 +409,63 @@ contract TexRouter02 is ITexRouter02 {
     }
   }
 
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    require(b > 0, "SafeMath: division by zero");
+    return a / b;
+  }
+
+  function batchSwap(Swap[] memory swap, uint8[] memory v, bytes32[] memory r, bytes32[] memory s) public
+    returns (uint256[] memory amounts)
+  {
+    bytes32 digest;
+    for (uint256 i = 0; i < swap.length; i++) {
+      // require(
+      //   Recorder(recorder).validate(
+      //     keccak256(
+      //       abi.encodePacked(
+      //         msg.sender,
+      //         amountIn,
+      //         amountOutMin,
+      //         path,
+      //         to,
+      //         deadline
+      //       )
+      //     )
+      //   ),
+      //   "TX validation is failed!"
+      // );
+      bytes32 digest = keccak256(abi.encodePacked(
+          "\x19\x01",
+          DOMAIN_SEPARATOR,
+          _generateHashedMessage(swap[i])
+      ));
+      require(
+        ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner,
+        "TexRouter: signature is not valid"
+      );    
+      amounts = TexLibrary.getAmountsOut(factory, swap[i].amountIn-div(swap[i].amountIn,2000), swap[i].path);
+      require(
+        amounts[amounts.length - 1] >= swap[i].amountOutMin,
+        "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
+      );
+      TransferHelper.safeTransferFrom(
+        swap[i].path[0],
+        swap[i].txOwner,
+        feeTo,
+        div(swap[i].amountIn,2000)
+      );
+      TransferHelper.safeTransferFrom(
+        swap[i].path[0],
+        swap[i].txOwner,
+        TexLibrary.pairFor(factory, swap[i].path[0], swap[i].path[1]),
+        amounts[0]
+      );
+      _swap(amounts, swap[i].path, swap[i].to);
+
+      //Recorder(recorder).goForward();
+    }
+  }
+
   function swapExactTokensForTokens(
     uint256 amountIn,
     uint256 amountOutMin,
@@ -355,26 +479,32 @@ contract TexRouter02 is ITexRouter02 {
     ensure(deadline)
     returns (uint256[] memory amounts)
   {
-    require(
-      Recorder(recorder).validate(
-        keccak256(
-          abi.encodePacked(
-            msg.sender,
-            amountIn,
-            amountOutMin,
-            path,
-            to,
-            deadline
-          )
-        )
-      ),
-      "TX validation is failed!"
-    );
-
-    amounts = TexLibrary.getAmountsOut(factory, amountIn, path);
+    // require(
+    //   Recorder(recorder).validate(
+    //     keccak256(
+    //       abi.encodePacked(
+    //         msg.sender,
+    //         amountIn,
+    //         amountOutMin,
+    //         path,
+    //         to,
+    //         deadline
+    //       )
+    //     )
+    //   ),
+    //   "TX validation is failed!"
+    // );
+    
+    amounts = TexLibrary.getAmountsOut(factory, amountIn-div(amountIn,2000), path);
     require(
       amounts[amounts.length - 1] >= amountOutMin,
       "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
+    );
+    TransferHelper.safeTransferFrom(
+      path[0],
+      msg.sender,
+      feeTo,
+      div(amountIn,20)
     );
     TransferHelper.safeTransferFrom(
       path[0],
@@ -384,7 +514,7 @@ contract TexRouter02 is ITexRouter02 {
     );
     _swap(amounts, path, to);
 
-    Recorder(recorder).goForward();
+    //Recorder(recorder).goForward();
   }
 
   function swapTokensForExactTokens(
