@@ -117,9 +117,9 @@ const config: HardhatUserConfig = {
     optimism_kovan: {
       url: process.env.OPTIMISM_KOVAN_URL || "",
       accounts: [
-        // process.env.OPERATOR_PRIVATE_KEY as any,
-        process.env.PRIVATE_KEY1 as any,
-        process.env.PRIVATE_KEY2 as any,
+        process.env.PRIV_KEY0 as any,
+        process.env.PRIV_KEY1 as any,
+        process.env.PRIV_KEY2 as any,
         // process.env.PRIVATE_KEY3 as any,
         // process.env.PRIVATE_KEY4 as any,
         // process.env.PRIVATE_KEY5 as any,

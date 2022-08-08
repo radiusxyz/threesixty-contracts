@@ -419,21 +419,21 @@ contract TexRouter02 is ITexRouter02 {
   {
     bytes32 digest;
     for (uint256 i = 0; i < swap.length; i++) {
-      // require(
-      //   Recorder(recorder).validate(
-      //     keccak256(
-      //       abi.encodePacked(
-      //         msg.sender,
-      //         amountIn,
-      //         amountOutMin,
-      //         path,
-      //         to,
-      //         deadline
-      //       )
-      //     )
-      //   ),
-      //   "TX validation is failed!"
-      // );
+      require(
+        Recorder(recorder).validate(
+          keccak256(
+            abi.encodePacked(
+              swap[i].txOwner,
+              swap[i].amountIn,
+              swap[i].amountOutMin,
+              swap[i].path,
+              swap[i].to,
+              swap[i].deadline
+            )
+          )
+        ),
+        "TX validation is failed!"
+      );
       bytes32 digest = keccak256(abi.encodePacked(
           "\x19\x01",
           DOMAIN_SEPARATOR,
@@ -462,7 +462,7 @@ contract TexRouter02 is ITexRouter02 {
       );
       _swap(amounts, swap[i].path, swap[i].to);
 
-      //Recorder(recorder).goForward();
+      Recorder(recorder).goForward();
     }
   }
 

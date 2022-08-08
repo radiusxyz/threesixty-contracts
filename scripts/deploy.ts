@@ -2,7 +2,7 @@ import { providers } from "ethers";
 import { ethers } from "hardhat";
 
 async function main() {
-  const provider = new providers.JsonRpcProvider(process.env.DEV_URL);
+  const provider = new providers.JsonRpcProvider(process.env.OPTIMISM_KOVAN_URL);
   
   const WETH9 = await ethers.getContractFactory("WETH9");
   const weth = await WETH9.deploy();
@@ -19,7 +19,7 @@ async function main() {
   const ERC20_2 = await ethers.getContractFactory("SLVRToken");
   const erc20_2 = await ERC20_2.connect(signer2).deploy(1000000);
   await erc20_2.deployed();
-  console.log("ERC20 deployed to:", erc20_2.address);
+  console.log("SLVRToken deployed to:", erc20_2.address);
 
   const Recorder = await ethers.getContractFactory("Recorder");
   const recorder = await Recorder.deploy();
