@@ -11,13 +11,13 @@ async function main() {
   
   const signer1 = new ethers.Wallet(process.env.PRIV_KEY1!, provider);
   const ERC20_1 = await ethers.getContractFactory("GLDToken");
-  const erc20_1 = await ERC20_1.connect(signer1).deploy(1000000);
+  const erc20_1 = await ERC20_1.connect(signer1).deploy(ethers.utils.parseEther("1000000.0"));
   await erc20_1.deployed();
   console.log("GLDToken deployed to:", erc20_1.address);
 
   const signer2 = new ethers.Wallet(process.env.PRIV_KEY2!, provider);
   const ERC20_2 = await ethers.getContractFactory("SLVRToken");
-  const erc20_2 = await ERC20_2.connect(signer2).deploy(1000000);
+  const erc20_2 = await ERC20_2.connect(signer2).deploy(ethers.utils.parseEther("1000000.0"));
   await erc20_2.deployed();
   console.log("SLVRToken deployed to:", erc20_2.address);
 
