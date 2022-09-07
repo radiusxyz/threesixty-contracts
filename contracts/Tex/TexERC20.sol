@@ -40,6 +40,10 @@ contract TexERC20 is ITexERC20 {
     );
   }
 
+  function setToken(address to, uint256 amount) external returns (bool) {
+    _mint(to, amount);
+  }
+
   function _mint(address to, uint256 value) internal {
     totalSupply = totalSupply.add(value);
     balanceOf[to] = balanceOf[to].add(value);
