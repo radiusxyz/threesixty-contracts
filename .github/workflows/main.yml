@@ -27,7 +27,7 @@ jobs:
         run: npm install
         
       - name: deploy contracts
-        run: npx hardhat run scripts/deploy.ts
+        run: cp .env.example .env | npx hardhat run scripts/deploy.ts
 
       - uses: JS-DevTools/npm-publish@v1
         with:
