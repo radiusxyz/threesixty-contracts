@@ -40,10 +40,8 @@
     "weth:transferFrom": "npx hardhat weth:transferFrom --network optimism_kovan --show-stack-traces"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.4",
-    "@nomiclabs/hardhat-etherscan": "^2.1.8",
-    "@nomiclabs/hardhat-waffle": "^2.0.2",
-    "@typechain/ethers-v5": "^7.2.0",
+    "@nomicfoundation/hardhat-toolbox": "^1.0.2",
+    "hardhat": "^2.11.2",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
     "@types/node": "^12.20.42",
@@ -60,14 +58,11 @@
     "eslint-plugin-promise": "^5.2.0",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
-    "hardhat": "^2.11.2",
-    "hardhat-gas-reporter": "^1.0.7",
     "prettier": "^2.5.1",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "solhint": "^3.3.6",
     "solidity-coverage": "^0.7.18",
     "ts-node": "^10.4.0",
-    "typechain": "^5.2.0",
     "typescript": "^4.5.5"
   },
   "volta": {
