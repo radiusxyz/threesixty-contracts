@@ -1,5 +1,6 @@
 import { providers } from "ethers";
 import { ethers } from "hardhat";
+import { writeFileSync } from "fs";
 
 async function main() {
   const provider = new providers.JsonRpcProvider(process.env.OPTIMISM_KOVAN_URL);
@@ -41,6 +42,17 @@ async function main() {
   await texFactory.createPair(erc20_1.address, erc20_2.address);
   const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
   console.log("pairAddress:", pairAddress);
+
+  const content = JSON.stringify({ 
+    weth: weth.address, 
+    gld: erc20_1.address,
+    slvr: erc20_2.address,
+    recorder: recorder.address,
+    factory: texFactory.address,
+    router: texRouter02.address,
+    pair: pairAddress
+  });
+  writeFileSync("deployed/contracts.json", content);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
