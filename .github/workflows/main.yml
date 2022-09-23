@@ -25,9 +25,12 @@ jobs:
 
       - name: setup hardhat environment
         run: npm install
+      
+      - name: setup env
+        run: cp .env.example .env
         
       - name: deploy contracts
-        run: cp .env.example .env | npx hardhat run scripts/deploy.ts
+        run: npx hardhat run scripts/deploy.ts
 
       - uses: JS-DevTools/npm-publish@v1
         with:
