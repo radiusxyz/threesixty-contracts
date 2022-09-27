@@ -1,3 +1,5 @@
+import "@nomicfoundation/hardhat-toolbox";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -50,12 +52,12 @@ import "./tasks/WETH9/005-transferFrom";
 import "./tasks/utils/accounts";
 import "./tasks/utils/001-getInitHash";
 
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
+//import "@nomiclabs/hardhat-etherscan";
+//import "@nomiclabs/hardhat-waffle";
+//import "@typechain/hardhat";
 
-import "hardhat-gas-reporter";
-import "solidity-coverage";
+//import "hardhat-gas-reporter";
+//import "solidity-coverage";
 
 // Check "https://hardhat.org/config/"
 const config: HardhatUserConfig = {
@@ -132,7 +134,7 @@ const config: HardhatUserConfig = {
       gas: 10000000,
     },
     matic_mumbai: {
-      url: process.env.MATIC_MUMBAI_URL || "",
+      url: process.env.MUMBAI_URL || "",
       accounts: [
         process.env.PRIV_KEY0 as any,
         process.env.PRIV_KEY1 as any,
