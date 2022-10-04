@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { writeFileSync } from "fs";
+import { writeFileSync,copySync } from "fs";
 
 async function main() {
   const WETH9 = await ethers.getContractFactory("WETH9");
@@ -51,6 +51,7 @@ async function main() {
     pair: pairAddress
   });
   writeFileSync("deployed/contracts.json", content);
+  copySync("artifacts","deployed/artifacts");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
