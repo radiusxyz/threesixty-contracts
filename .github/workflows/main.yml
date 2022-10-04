@@ -26,7 +26,7 @@ jobs:
 
       - name: setup hardhat environment
         run: npm install
-        
+
       - name: Create .env
         uses: weyheyhey/create-dotenv-action@v1
         with:
@@ -38,7 +38,7 @@ jobs:
           ^PRIV_KEY2: ${{ secrets.PRIV_KEY2 }}
 
       - name: deploy contracts
-        run: npx hardhat run scripts/deploy.ts
+        run: npx hardhat run scripts/deploy.ts --network matic_mumbai
 
       - uses: JS-DevTools/npm-publish@v1
         with:
