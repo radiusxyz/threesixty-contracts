@@ -27,6 +27,16 @@ jobs:
       - name: setup hardhat environment
         run: npm install
         
+      - name: Create .env
+        uses: weyheyhey/create-dotenv-action@v1
+        with:
+          wildecard: "^"
+        env:
+          ^MUMBAI_URL: ${{ secrets.MUMBAI_URL }}
+          ^PRIV_KEY0: ${{ secrets.PRIV_KEY0 }}
+          ^PRIV_KEY1: ${{ secrets.PRIV_KEY1 }}
+          ^PRIV_KEY2: ${{ secrets.PRIV_KEY2 }}
+
       - name: deploy contracts
         run: npx hardhat run scripts/deploy.ts
 
