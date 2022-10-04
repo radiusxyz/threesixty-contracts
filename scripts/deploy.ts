@@ -1,5 +1,6 @@
 import { ethers } from "hardhat";
-import { writeFileSync,copySync } from "fs";
+import { writeFileSync } from "fs";
+import { copySync } from "fs-extra";
 
 async function main() {
   const WETH9 = await ethers.getContractFactory("WETH9");
