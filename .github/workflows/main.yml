@@ -32,6 +32,7 @@ jobs:
         with:
           wildecard: "^"
         env:
+          ^ACCOUNT0: "0xCCc379b885ABA6820304E8eC9DC979Bdd8941b6e"
           ^MUMBAI_URL: ${{ secrets.MUMBAI_URL }}
           ^PRIV_KEY0: ${{ secrets.PRIV_KEY0 }}
           ^PRIV_KEY1: ${{ secrets.PRIV_KEY1 }}
