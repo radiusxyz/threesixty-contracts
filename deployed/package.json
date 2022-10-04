@@ -1,5 +1,5 @@
 {
 	"name": "@radiusxyz/tex-contracts",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"files": ["contracts.json","artifacts"]
 }
