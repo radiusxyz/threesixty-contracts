@@ -1,8 +1,8 @@
 import { ethers } from "hardhat";
+import { writeFileSync } from "fs";
+import { copySync } from "fs-extra";
 
 async function main() {
-  //const provider = new ethers.provider;
-
   const WETH9 = await ethers.getContractFactory("WETH9");
   const weth = await WETH9.deploy();
   await weth.deployed();
@@ -41,6 +41,18 @@ async function main() {
 
   const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
   console.log("pairAddress:", pairAddress);
+
+  const content = JSON.stringify({ 
+    weth: weth.address, 
+    gld: erc20_1.address,
+    slvr: erc20_2.address,
+    recorder: recorder.address,
+    factory: texFactory.address,
+    router: texRouter02.address,
+    pair: pairAddress
+  });
+  writeFileSync("deployed/contracts.json", content);
+  copySync("artifacts","deployed/artifacts");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

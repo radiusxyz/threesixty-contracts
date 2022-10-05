@@ -1,9 +1,0 @@
-
-> deploy:calHash
-> npx hardhat deploy --network matic --tags CalHash --show-stack-traces
-
-Compiling 17 files with 0.6.6
-Generating typings for: 17 artifacts in dir: typechain-types for target: ethers-v5
-Successfully generated 25 typings!
-Solidity compilation finished successfully
-CalHash deployed to: 0xFE92649193Ba9c0e8e1cB2A1C4a295c779DfDECF
