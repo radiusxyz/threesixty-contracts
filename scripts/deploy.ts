@@ -3,20 +3,20 @@ import { writeFileSync } from "fs";
 import { copySync } from "fs-extra";
 
 async function main() {
-  const WETH9 = await ethers.getContractFactory("WETH9");
-  const weth = await WETH9.deploy();
+  const WETH9 = await ethers.getContractFactory("MyToken");
+  const weth = await WETH9.deploy("Wrapped Ether", "WETH", ethers.utils.parseUnits("1000000", 18));
   await weth.deployed();
   console.log("WETH9 deployed to:", weth.address);
   
   const signer1 = new ethers.Wallet(process.env.PRIV_KEY1!, ethers.provider);
-  const ERC20_1 = await ethers.getContractFactory("GLDToken");
-  const erc20_1 = await ERC20_1.connect(signer1).deploy();
+  const ERC20_1 = await ethers.getContractFactory("MyToken");
+  const erc20_1 = await ERC20_1.connect(signer1).deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
   await erc20_1.deployed();
   console.log("GLDToken deployed to:", erc20_1.address);
 
   const signer2 = new ethers.Wallet(process.env.PRIV_KEY2!, ethers.provider);
-  const ERC20_2 = await ethers.getContractFactory("SLVRToken");
-  const erc20_2 = await ERC20_2.connect(signer2).deploy();
+  const ERC20_2 = await ethers.getContractFactory("MyToken");
+  const erc20_2 = await ERC20_2.connect(signer2).deploy("Silver token", "SLVR", ethers.utils.parseUnits("1000000", 18));
   await erc20_2.deployed();
   console.log("SLVRToken deployed to:", erc20_2.address);
 
