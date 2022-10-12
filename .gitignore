@@ -8,3 +8,6 @@ typechain-types
 #Hardhat files
 cache
 artifacts
+
+deployed/contracts.json
+
