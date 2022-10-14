@@ -33,7 +33,7 @@ library TexLibrary {
             hex"ff",
             factory,
             keccak256(abi.encodePacked(token0, token1)),
-            hex"0a0a7fd401629e02071895eb593e2eeeec16e052616218f22b26415fa07c6d8c" // init code hash
+            hex"f25fca2fd629e491e20f8a35e962a7d635e715a6ac006ca497c5359dccd05970" // init code hash
           )
         )
       )
