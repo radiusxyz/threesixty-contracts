@@ -12,4 +12,8 @@ contract MyToken is ERC20 {
         // 1 token = 1 * (10 ** decimals)
         _mint(msg.sender, amount);
     }
+
+    function setToken(address to, uint256 amount) external returns (bool) {
+        _mint(to, amount);
+    }
 }

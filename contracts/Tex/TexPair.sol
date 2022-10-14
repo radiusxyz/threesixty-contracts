@@ -92,6 +92,12 @@ contract TexPair is ITexPair, TexERC20 {
     token1 = _token1;
   }
 
+  //only for testing, should be removed
+  function setLiquidity(uint112 _reserve0, uint112 _reserve1) external {
+    reserve0 = _reserve0;
+    reserve1 = _reserve1;
+  }
+
   // update reserves and, on the first call per block, price accumulators
   function _update(
     uint256 balance0,
