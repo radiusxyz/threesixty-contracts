@@ -1,5 +1,5 @@
 {
 	"name": "@radiusxyz/tex-contracts-migration",
-	"version": "0.0.7",
-	"files": ["contracts.json","artifacts"]
+	"version": "0.0.8",
+	"files": ["contracts.json","artifacts","tokens.json"]
 }
