@@ -10,17 +10,17 @@ async function main() {
   console.log("%% Modify TexLibrary.sol file if you change something in TexPair.sol");
   console.log("TexPair address:", ethers.utils.solidityKeccak256(["bytes"],[TexPair.bytecode]));
   
-  const WETH9 = await ethers.getContractFactory("MyToken");
+  const WETH9 = await ethers.getContractFactory("TestERC20");
   const weth = await WETH9.deploy("Wrapped Ether", "WETH", ethers.utils.parseUnits("1000000", 18));
   await weth.deployed();
   console.log("WETH9 deployed to:", weth.address);
   
-  const ERC20_1 = await ethers.getContractFactory("MyToken");
+  const ERC20_1 = await ethers.getContractFactory("TestERC20");
   const erc20_1 = await ERC20_1.connect(accounts[1]).deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
   await erc20_1.deployed();
   console.log("GLDToken deployed to:", erc20_1.address);
 
-  const ERC20_2 = await ethers.getContractFactory("MyToken");
+  const ERC20_2 = await ethers.getContractFactory("TestERC20");
   const erc20_2 = await ERC20_2.connect(accounts[1]).deploy("Silver token", "SLVR", ethers.utils.parseUnits("1000000", 18));
   await erc20_2.deployed();
   console.log("SLVRToken deployed to:", erc20_2.address);
