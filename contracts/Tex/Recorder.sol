@@ -17,6 +17,7 @@ contract Recorder {
 
   mapping(uint256 => bool) public isSaved;
   mapping(uint256 => bytes32[]) public roundTxIdList;
+  mapping(bytes32 => address) public txOwners;
 
   function addTxId(bytes32[] memory _txList) public {
     require(isSaved[currentRound] == false);
@@ -24,8 +25,13 @@ contract Recorder {
     isSaved[currentRound] = true;
   }
 
+  function cancelTxId(bytes32 _txId) public {
+    require(txOwners[_txId] == msg.sender);
+    txOwners[_txId] = address(0x0);
+  }
+
   function validate(bytes32 _txId) public view returns (bool) {
-    if (roundTxIdList[currentRound][currentIndex] == _txId) return true;
+    if (roundTxIdList[currentRound][currentIndex] == _txId && txOwners[_txId] != address(0x0)) return true;
     return false;
   }
 

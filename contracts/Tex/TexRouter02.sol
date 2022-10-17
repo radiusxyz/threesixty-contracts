@@ -24,6 +24,8 @@ contract TexRouter02 is ITexRouter02 {
   address public feeTo;
   address public feeToSetter;
 
+  mapping(address => uint256) public nonces;
+
   struct EIP712Domain {
     string  name;
     string  version;
@@ -38,10 +40,11 @@ contract TexRouter02 is ITexRouter02 {
     address[] path;
     address to;
     uint256 deadline;
+    uint256 nonce;
   }
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline,uint256 nonce)");
   bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
@@ -100,8 +103,8 @@ contract TexRouter02 is ITexRouter02 {
       swap.amountOutMin,
       keccak256(abi.encodePacked(swap.path)),
       swap.to,
+      swap.nonce,
       swap.deadline
-      // nonces[swap.txOwner]++ // TODO: import nonce
     ));
   }
 
@@ -428,6 +431,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].amountOutMin,
               swap[i].path,
               swap[i].to,
+              swap[i].nonce,
               swap[i].deadline
             )
           )
@@ -442,7 +446,11 @@ contract TexRouter02 is ITexRouter02 {
       require(
         ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner,
         "TexRouter: signature is not valid"
-      );    
+      );
+      require(
+        nonces[swap[i].txOwner] == swap[i].nonce++,
+        "TexRouter: nonce is not valid"
+      );
       amounts = TexLibrary.getAmountsOut(factory, swap[i].amountIn-div(swap[i].amountIn,2000), swap[i].path);
       require(
         amounts[amounts.length - 1] >= swap[i].amountOutMin,
@@ -488,6 +496,7 @@ contract TexRouter02 is ITexRouter02 {
     //         amountOutMin,
     //         path,
     //         to,
+    //         nonce,
     //         deadline
     //       )
     //     )
