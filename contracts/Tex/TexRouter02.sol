@@ -434,7 +434,8 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].nonce,
               swap[i].deadline
             )
-          )
+          ),
+          swap[i].txOwner
         ),
         "TX validation is failed!"
       );

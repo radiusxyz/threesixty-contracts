@@ -17,22 +17,20 @@ contract Recorder {
 
   mapping(uint256 => bool) public isSaved;
   mapping(uint256 => bytes32[]) public roundTxIdList;
-  mapping(bytes32 => address) public txOwners;
+  mapping(bytes32 => mapping(address => bool)) public useOfVeto;
 
   function addTxIds(bytes32[] memory _txList) public {
-    //Should be included
-    //require(isSaved[currentRound] == false);
+    require(isSaved[currentRound] == false);
     roundTxIdList[currentRound] = _txList;
     isSaved[currentRound] = true;
   }
 
   function cancelTxId(bytes32 _txId) public {
-    require(txOwners[_txId] == msg.sender);
-    txOwners[_txId] = address(0x0);
+    useOfVeto[_txId][msg.sender] = true;
   }
 
-  function validate(bytes32 _txId) public view returns (bool) {
-    if (roundTxIdList[currentRound][currentIndex] == _txId && txOwners[_txId] != address(0x0)) return true;
+  function validate(bytes32 _txId, address _txOwner) public view returns (bool) {
+    if (roundTxIdList[currentRound][currentIndex] == _txId && useOfVeto[_txId][_txOwner] != true) return true;
     return false;
   }
 
