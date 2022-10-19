@@ -39,12 +39,12 @@ contract TexRouter02 is ITexRouter02 {
     uint256 amountOutMin;
     address[] path;
     address to;
-    uint256 deadline;
     uint256 nonce;
+    uint256 deadline;
   }
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 deadline,uint256 nonce)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,uint256 amountIn,uint256 amountOutMin,address[] path,address to,uint256 nonce,uint256 deadline)");
   bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
