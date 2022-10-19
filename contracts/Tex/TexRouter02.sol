@@ -66,7 +66,7 @@ contract TexRouter02 is ITexRouter02 {
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
       name: "Tex swap",
       version: "1",
-      chainId: 17,
+      chainId: 80001,
       verifyingContract: address(this)
     }));  
   }
