@@ -30,65 +30,9 @@ async function main() {
   await recorder.deployed();
   console.log("Recorder deployed to:", recorder.address);
 
-  // const TexFactory = await ethers.getContractFactory("TexFactory");
-  // const texFactory = await TexFactory.deploy(accounts[0].address);
-  // await texFactory.deployed();
-  const texFactoryAddress = "0x54b6AA9AB22EDAc79F192aad61309654f9A7beD6"
-  const texFactoryAbi = [
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "tokenA",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "tokenB",
-          "type": "address"
-        }
-      ],
-      "name": "createPair",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "pair",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "getPair",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
-  const texFactory = new ethers.Contract(texFactoryAddress,texFactoryAbi,accounts[0]);
+  const TexFactory = await ethers.getContractFactory("TexFactory");
+  const texFactory = await TexFactory.deploy(accounts[0].address);
+  await texFactory.deployed();
   console.log("TexFactory deployed to:", texFactory.address);
   console.log("FeeToSetterAddress:", accounts[0].address);
 
