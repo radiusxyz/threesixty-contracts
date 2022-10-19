@@ -19,7 +19,7 @@ contract Recorder {
   mapping(uint256 => bytes32[]) public roundTxIdList;
   mapping(bytes32 => address) public txOwners;
 
-  function addTxId(bytes32[] memory _txList) public {
+  function addTxIds(bytes32[] memory _txList) public {
     //Should be included
     //require(isSaved[currentRound] == false);
     roundTxIdList[currentRound] = _txList;
