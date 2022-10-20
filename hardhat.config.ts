@@ -56,8 +56,10 @@ const config: HardhatUserConfig = {
     overrides: {},
   },
   paths: {
-    deploy: "./deploy",
-    deployments: "./deployments",
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
   },
   networks: {
     optimism_kovan: {
