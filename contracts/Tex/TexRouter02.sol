@@ -449,7 +449,7 @@ contract TexRouter02 is ITexRouter02 {
         "TexRouter: signature is not valid"
       );
       require(
-        nonces[swap[i].txOwner] == swap[i].nonce++,
+        swap[i].nonce == nonces[swap[i].txOwner]++,
         "TexRouter: nonce is not valid"
       );
       amounts = TexLibrary.getAmountsOut(factory, swap[i].amountIn-div(swap[i].amountIn,2000), swap[i].path);
