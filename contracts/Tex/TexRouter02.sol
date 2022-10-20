@@ -21,8 +21,13 @@ contract TexRouter02 is ITexRouter02 {
 
   address public immutable recorder;
 
+  address public owner;
+
   address public feeTo;
   address public feeToSetter;
+
+  address public operator;
+  address public operatorSetter;
 
   mapping(address => uint256) public nonces;
 
@@ -56,12 +61,15 @@ contract TexRouter02 is ITexRouter02 {
     address _recorder,
     address _factory,
     address _WETH,
-    address _feeToSetter
+    address _feeToSetter,
+    address _operatorSetter
   ) public {
     recorder = _recorder;
     factory = _factory;
     WETH = _WETH;
     feeToSetter = _feeToSetter;
+    operatorSetter = _operatorSetter;
+    owner = msg.sender;
 
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
       name: "Tex swap",
@@ -81,8 +89,18 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function setFeeToSetter(address _feeToSetter) external {
-    require(msg.sender == feeToSetter, "Tex: FORBIDDEN");
+    require(msg.sender == feeToSetter || msg.sender == owner, "Tex: FORBIDDEN");
     feeToSetter = _feeToSetter;
+  }
+
+  function setOperator(address _operator) external {
+    require(msg.sender == operatorSetter, "Tex: FORBIDDEN");
+    operator = _operator;
+  }
+
+  function setOperatorSetter(address _operatorSetter) external {
+    require(msg.sender == operatorSetter || msg.sender == owner, "Tex: FORBIDDEN");
+    operatorSetter = _operatorSetter;
   }
 
   function _generateHashedMessage(EIP712Domain memory eip712Domain) internal pure returns (bytes32) {
