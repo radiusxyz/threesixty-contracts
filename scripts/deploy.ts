@@ -95,7 +95,7 @@ async function main() {
   const pair = await texFactory.createPair(erc20_1.address, erc20_2.address);
 
   const TexRouter02 = await ethers.getContractFactory("TexRouter02", accounts[0]);
-  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[0].address);
+  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[1].address, accounts[2].address);
   await texRouter02.deployed();
   console.log("TexRouter02 deployed to:", texRouter02.address);
   await texRouter02.setFeeTo(accounts[0].address);
