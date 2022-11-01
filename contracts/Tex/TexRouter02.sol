@@ -569,7 +569,6 @@ contract TexRouter02 is ITexRouter02 {
           );
         }  
       }
-      
       Recorder(recorder).goForward();
     }
   }
