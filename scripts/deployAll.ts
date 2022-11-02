@@ -16,12 +16,12 @@ async function main() {
   console.log("WETH9 deployed to:", weth.address);
   
   const ERC20_1 = await ethers.getContractFactory("TestERC20");
-  const erc20_1 = await ERC20_1.connect(accounts[1]).deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
+  const erc20_1 = await ERC20_1.deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
   await erc20_1.deployed();
   console.log("GLDToken deployed to:", erc20_1.address);
 
   const ERC20_2 = await ethers.getContractFactory("TestERC20");
-  const erc20_2 = await ERC20_2.connect(accounts[1]).deploy("Silver token", "SLVR", ethers.utils.parseUnits("1000000", 18));
+  const erc20_2 = await ERC20_2.deploy("Silver token", "SLVR", ethers.utils.parseUnits("1000000", 18));
   await erc20_2.deployed();
   console.log("SLVRToken deployed to:", erc20_2.address);
 
@@ -31,18 +31,18 @@ async function main() {
   console.log("Recorder deployed to:", recorder.address);
 
   const TexFactory = await ethers.getContractFactory("TexFactory");
-  const texFactory = await TexFactory.deploy(accounts[0].address);
+  const texFactory = await TexFactory.deploy(accounts[2].address);
   await texFactory.deployed();
   console.log("TexFactory deployed to:", texFactory.address);
-  console.log("FeeToSetterAddress:", accounts[0].address);
+  console.log("FeeToSetterAddress:", accounts[2].address);
 
   const pair = await texFactory.createPair(erc20_1.address, erc20_2.address);
 
   const TexRouter02 = await ethers.getContractFactory("TexRouter02", accounts[0]);
-  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[1].address, accounts[2].address);
+  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[2].address, accounts[2].address);
   await texRouter02.deployed();
   console.log("TexRouter02 deployed to:", texRouter02.address);
-  await texRouter02.setFeeTo(accounts[0].address);
+  await texRouter02.connect(accounts[2]).setFeeTo(accounts[2].address);
 
   const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
   console.log("pairAddress:", pairAddress);
@@ -50,14 +50,14 @@ async function main() {
   await erc20_1.approve(texRouter02.address, ethers.utils.parseUnits("10000", 18));
   await erc20_2.approve(texRouter02.address, ethers.utils.parseUnits("10000", 18));
 
-  await texRouter02.connect(accounts[1]).addLiquidity(
+  await texRouter02.addLiquidity(
     erc20_1.address,
     erc20_2.address,
     ethers.utils.parseUnits("2", 18),
     ethers.utils.parseUnits("2", 18),
     ethers.utils.parseUnits("1", 18),
     ethers.utils.parseUnits("1", 18),
-    accounts[1].address,
+    accounts[2].address,
     1766730046
   );
 

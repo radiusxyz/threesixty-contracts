@@ -85,6 +85,7 @@ interface ITexRouter01 {
   ) external returns (uint256 amountToken, uint256 amountETH);
 
   function swapExactTokensForTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -93,6 +94,7 @@ interface ITexRouter01 {
   ) external returns (uint256[] memory amounts);
 
   function swapTokensForExactTokens(
+    address origin,
     uint256 amountOut,
     uint256 amountInMax,
     address[] calldata path,
@@ -108,6 +110,7 @@ interface ITexRouter01 {
   ) external payable returns (uint256[] memory amounts);
 
   function swapTokensForExactETH(
+    address origin,
     uint256 amountOut,
     uint256 amountInMax,
     address[] calldata path,
@@ -116,6 +119,7 @@ interface ITexRouter01 {
   ) external returns (uint256[] memory amounts);
 
   function swapExactTokensForETH(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -124,6 +128,7 @@ interface ITexRouter01 {
   ) external returns (uint256[] memory amounts);
 
   function swapETHForExactTokens(
+    address origin,
     uint256 amountOut,
     address[] calldata path,
     address to,

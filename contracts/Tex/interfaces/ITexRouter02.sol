@@ -26,6 +26,7 @@ interface ITexRouter02 is ITexRouter01 {
   ) external returns (uint256 amountETH);
 
   function swapExactTokensForTokensSupportingFeeOnTransferTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -41,6 +42,7 @@ interface ITexRouter02 is ITexRouter01 {
   ) external payable;
 
   function swapExactTokensForETHSupportingFeeOnTransferTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,

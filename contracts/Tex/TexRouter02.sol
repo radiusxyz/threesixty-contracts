@@ -437,15 +437,15 @@ contract TexRouter02 is ITexRouter02 {
     return a / b;
   }
 
-  //0x38ed1739 swapExactTokensForTokens(uint256,uint256,address[],address,uint256)
-  //0x8803dbee swapTokensForExactTokens(uint256,uint256,address[],address,uint256)
+  //0x375734d9 swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)
+  //0x22b58410 swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)
   //0x7ff36ab5 swapExactETHForTokens(uint256,address[],address,uint256)
-  //0x4a25d94a swapTokensForExactETH(uint256,uint256,address[],address,uint256)
-  //0x18cbafe5 swapExactTokensForETH(uint256,uint256,address[],address,uint256)
-  //0xfb3bdb41 swapETHForExactTokens(uint256,address[],address,uint256)
-  //0x5c11d795 swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)
+  //0xfa3219d5 swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)
+  //0x9c91fcb5 swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)
+  //0xb05f579e swapETHForExactTokens(address,uint256,address[],address,uint256)
+  //0xb1ca4936 swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)
   //0xb6f9de95 swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)
-  //0x791ac947 swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)
+  //0x5cae0310 swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)
 
   function batchSwap(
     Swap[] memory swap, 
@@ -472,12 +472,13 @@ contract TexRouter02 is ITexRouter02 {
           )
         ),
         swap[i].txOwner)
-        && (swap[i].nonce == nonces[swap[i].txOwner]++) 
+        && (swap[i].nonce == nonces[swap[i].txOwner]++)
         && (ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner)) {
         if(swap[i].functionSelector == 0x38ed1739) {   // if else statement
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapExactTokensForTokens(uint256,uint256,address[],address,uint256)",
+              "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -488,7 +489,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0x8803dbee){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)",
+              "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -509,7 +511,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0x4a25d94a){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapTokensForExactETH(uint256,uint256,address[],address,uint256)",
+              "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -520,7 +523,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0x18cbafe5){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapExactTokensForETH(uint256,uint256,address[],address,uint256)",
+              "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -531,7 +535,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0xfb3bdb41){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapETHForExactTokens(uint256,address[],address,uint256)",
+              "swapETHForExactTokens(address,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountOut,
               swap[i].path,
               swap[i].to,
@@ -541,7 +546,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0x5c11d795){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+              "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -562,7 +568,8 @@ contract TexRouter02 is ITexRouter02 {
         } else if(swap[i].functionSelector == 0x791ac947){
           address(this).delegatecall(
             abi.encodeWithSignature(
-              "swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+              "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+              swap[i].txOwner,
               swap[i].amountIn,
               swap[i].amountOut,
               swap[i].path,
@@ -578,6 +585,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapExactTokensForTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -597,13 +605,13 @@ contract TexRouter02 is ITexRouter02 {
     );
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       feeTo,
       div(amountIn,20)
     );
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
@@ -611,6 +619,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapTokensForExactTokens(
+    address origin,
     uint256 amountOut,
     uint256 amountInMax,
     address[] calldata path,
@@ -627,7 +636,7 @@ contract TexRouter02 is ITexRouter02 {
     require(amounts[0] <= amountInMax, "TexRouter: EXCESSIVE_INPUT_AMOUNT");
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
@@ -664,6 +673,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapTokensForExactETH(
+    address origin,
     uint256 amountOut,
     uint256 amountInMax,
     address[] calldata path,
@@ -681,7 +691,7 @@ contract TexRouter02 is ITexRouter02 {
     require(amounts[0] <= amountInMax, "TexRouter: EXCESSIVE_INPUT_AMOUNT");
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
@@ -691,6 +701,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapExactTokensForETH(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -711,7 +722,7 @@ contract TexRouter02 is ITexRouter02 {
     );
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
@@ -721,6 +732,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapETHForExactTokens(
+    address origin,
     uint256 amountOut,
     address[] calldata path,
     address to,
@@ -746,7 +758,7 @@ contract TexRouter02 is ITexRouter02 {
     _swap(amounts, path, to);
     // refund dust eth, if any
     if (msg.value > amounts[0])
-      TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]);
+      TransferHelper.safeTransferETH(origin, msg.value - amounts[0]);
   }
 
   // **** SWAP (supporting fee-on-transfer tokens) ****
@@ -785,6 +797,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapExactTokensForTokensSupportingFeeOnTransferTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -793,7 +806,7 @@ contract TexRouter02 is ITexRouter02 {
   ) external virtual override ensure(deadline) {
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amountIn
     );
@@ -831,6 +844,7 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   function swapExactTokensForETHSupportingFeeOnTransferTokens(
+    address origin,
     uint256 amountIn,
     uint256 amountOutMin,
     address[] calldata path,
@@ -840,7 +854,7 @@ contract TexRouter02 is ITexRouter02 {
     require(path[path.length - 1] == WETH, "TexRouter: INVALID_PATH");
     TransferHelper.safeTransferFrom(
       path[0],
-      msg.sender,
+      origin,
       TexLibrary.pairFor(factory, path[0], path[1]),
       amountIn
     );
