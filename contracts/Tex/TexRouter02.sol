@@ -472,7 +472,7 @@ contract TexRouter02 is ITexRouter02 {
           )
         ),
         swap[i].txOwner)
-        && (swap[i].nonce == nonces[swap[i].txOwner]++)
+        && (swap[i].nonce == nonces[swap[i].txOwner])
         && (ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner)) {
         if(swap[i].functionSelector == 0x38ed1739) {   // if else statement
           address(this).delegatecall(
@@ -579,7 +579,6 @@ contract TexRouter02 is ITexRouter02 {
           );
         }  
       }
-      
       Recorder(recorder).goForward();
     }
   }
