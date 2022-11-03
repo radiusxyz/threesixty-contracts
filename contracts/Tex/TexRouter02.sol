@@ -474,7 +474,7 @@ contract TexRouter02 is ITexRouter02 {
         swap[i].txOwner)
         && (swap[i].nonce == nonces[swap[i].txOwner])
         && (ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner)) {
-        if(swap[i].functionSelector == 0x38ed1739) {   // if else statement
+        if(swap[i].functionSelector == 0x375734d9) {   // if else statement
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
@@ -486,7 +486,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0x8803dbee){
+        } else if(swap[i].functionSelector == 0x22b58410){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
@@ -508,7 +508,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0x4a25d94a){
+        } else if(swap[i].functionSelector == 0xfa3219d5){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
@@ -520,7 +520,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0x18cbafe5){
+        } else if(swap[i].functionSelector == 0x9c91fcb5){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
@@ -532,7 +532,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0xfb3bdb41){
+        } else if(swap[i].functionSelector == 0xb05f579e){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapETHForExactTokens(address,uint256,address[],address,uint256)",
@@ -543,7 +543,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0x5c11d795){
+        } else if(swap[i].functionSelector == 0xb1ca4936){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
@@ -565,7 +565,7 @@ contract TexRouter02 is ITexRouter02 {
               swap[i].deadline
             )
           );
-        } else if(swap[i].functionSelector == 0x791ac947){
+        } else if(swap[i].functionSelector == 0x5cae0310){
           address(this).delegatecall(
             abi.encodeWithSignature(
               "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
