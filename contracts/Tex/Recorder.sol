@@ -24,6 +24,7 @@ contract Recorder {
     //require(isSaved[currentRound] == false);
     roundTxIdList[currentRound] = _txList;
     isSaved[currentRound] = true;
+    currentIndex = 0;
   }
 
   function cancelTxId(bytes32 _txId) public {
