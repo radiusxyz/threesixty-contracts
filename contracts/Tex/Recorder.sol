@@ -19,7 +19,7 @@ contract Recorder {
   }
 
   modifier onlyOwner() {
-    require(msg.sender == owner);
+    require(tx.origin == owner);
     _;
   }
 
