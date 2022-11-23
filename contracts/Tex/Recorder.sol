@@ -37,6 +37,7 @@ contract Recorder {
     require(!result);
     roundTxHashes[currentRound] = _txHashes;
     isSaved[currentRound] = true;
+    currentIndex = 0;
   }
 
   function disableTxHash(bytes32 _txHash) public {
