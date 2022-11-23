@@ -474,98 +474,99 @@ contract TexRouter02 is ITexRouter02 {
                 swap[i].deadline
               )
             );
-          } else if(swap[i].functionSelector == 0x22b58410){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0x7ff36ab5){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactETHForTokens(uint256,address[],address,uint256)",
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0xfa3219d5){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0x9c91fcb5){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0xb05f579e){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapETHForExactTokens(address,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0xb1ca4936){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0xb6f9de95){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
-          } else if(swap[i].functionSelector == 0x5cae0310){
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
           }
+          // } else if(swap[i].functionSelector == 0x22b58410){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0x7ff36ab5){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactETHForTokens(uint256,address[],address,uint256)",
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0xfa3219d5){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0x9c91fcb5){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0xb05f579e){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapETHForExactTokens(address,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0xb1ca4936){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0xb6f9de95){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // } else if(swap[i].functionSelector == 0x5cae0310){
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // }
         }
       }
       Recorder(recorder).goForward();
@@ -594,12 +595,12 @@ contract TexRouter02 is ITexRouter02 {
     }
     require(
       Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
-      "TexRouter: Claim is not accepted. TX hash and proof hash are available!!"
+      "TexRouter: TX hash and proof hash are available!!"
     );
 
     require(
       proofHash != resultHash,
-      "TexRouter: Claim is not accepted. Signature is not valid"
+      "TexRouter: Signature is not valid"
     );
     bytes32 txMIMC = mimc.hash(
       swap.txOwner,
