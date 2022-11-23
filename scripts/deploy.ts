@@ -34,7 +34,7 @@ async function main() {
   // const TexFactory = await ethers.getContractFactory("TexFactory");
   // const texFactory = await TexFactory.deploy(accounts[0].address);
   // await texFactory.deployed();
-  const texFactoryAddress = "0x54b6AA9AB22EDAc79F192aad61309654f9A7beD6"
+  const texFactoryAddress = "0xbAfD1699456Fa07681e574B0B30aB1A996e6373e"
   const texFactoryAbi = [
     {
       "constant": false,
@@ -105,7 +105,7 @@ async function main() {
     }
   ]
   const texFactory = new ethers.Contract(texFactoryAddress,texFactoryAbi,accounts[0]);
-  await texFactory.setFeeToSetter(accounts[2].address);
+  //await texFactory.setFeeToSetter(accounts[2].address);
   console.log("TexFactory deployed to:", texFactory.address);
   console.log("FeeToSetterAddress:", accounts[2].address);
 
