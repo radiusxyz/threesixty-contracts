@@ -105,9 +105,9 @@ async function main() {
     }
   ]
   const texFactory = new ethers.Contract(texFactoryAddress,texFactoryAbi,accounts[0]);
-  await texFactory.setFeeToSetter(accounts[2].address);
+  //await texFactory.setFeeToSetter(accounts[2].address);
   console.log("TexFactory deployed to:", texFactory.address);
-  console.log("FeeToSetterAddress:", accounts[2].address);
+  //console.log("FeeToSetterAddress:", accounts[2].address);
 
   const pair = await texFactory.createPair(erc20_1.address, erc20_2.address);
 
