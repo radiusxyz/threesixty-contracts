@@ -7,39 +7,60 @@ contract Recorder {
 
   address public owner;
 
+  mapping(uint256 => bool) public isSaved;
+  mapping(uint256 => bytes32[]) public roundTxHashes;
+  mapping(bytes32 => mapping(address => bool)) public useOfVeto;
+  mapping(bytes32 => bool) public skippedTxHashes;
+
   event Commit(uint256 round, uint256 index);
 
   constructor() public {
-    currentRound = 0;
-    currentIndex = 0;
     owner = msg.sender;
   }
 
-  mapping(uint256 => bool) public isSaved;
-  mapping(uint256 => bytes32[]) public roundTxIdList;
-  mapping(bytes32 => mapping(address => bool)) public useOfVeto;
+  modifier onlyOwner() {
+    require(msg.sender == owner);
+    _;
+  }
 
-  function addTxIds(bytes32[] memory _txList) public {
-    require(isSaved[currentRound] == false);
-    roundTxIdList[currentRound] = _txList;
+  function transferOwnership(address newOwner) public onlyOwner {
+    require(newOwner != address(0));
+    owner = newOwner;
+  }
+
+  function addTxHashes(bytes32[] memory _txHashes) public onlyOwner {
+    require(!isSaved[currentRound]);
+    bool result;
+    for (uint256 i = 0; i < _txHashes.length; i++) {
+      result = result || skippedTxHashes[_txHashes[i]]; 
+    }
+    require(!result);
+    roundTxHashes[currentRound] = _txHashes;
     isSaved[currentRound] = true;
   }
 
-  function cancelTxId(bytes32 _txId) public {
-    useOfVeto[_txId][msg.sender] = true;
+  function disableTxHash(bytes32 _txHash) public {
+    useOfVeto[_txHash][msg.sender] = true;
   }
 
-  function validate(bytes32 _txId, address _txOwner) public view returns (bool) {
-    if (roundTxIdList[currentRound][currentIndex] == _txId && useOfVeto[_txId][_txOwner] != true) return true;
+  function validate(bytes32 _txHash, address _txOwner) public view returns (bool) {
+    if (roundTxHashes[currentRound][currentIndex] == _txHash && useOfVeto[_txHash][_txOwner] != true) return true;
     return false;
   }
 
-  function goForward() public {
+  function goForward() public onlyOwner {
     emit Commit(currentRound, currentIndex);
-    currentIndex++;
-    if (roundTxIdList[currentRound].length == currentIndex) {
+    if (roundTxHashes[currentRound].length == currentIndex + 1) {
       currentRound++;
       currentIndex = 0;
-    }
+    } else currentIndex++;
+  }
+
+  function skipRound() public onlyOwner {
+    for (uint256 i = 0; i < roundTxHashes[currentRound].length; i++) {
+      skippedTxHashes[roundTxHashes[currentRound][i]] = true;
+    }    
+    currentRound++;
+    currentIndex = 0;
   }
 }

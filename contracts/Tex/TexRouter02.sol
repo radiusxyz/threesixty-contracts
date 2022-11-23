@@ -12,6 +12,7 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IWETH.sol";
 
 import "./Recorder.sol";
+import "./Mimc.sol";
 
 contract TexRouter02 is ITexRouter02 {
   using SafeMath for uint256;
@@ -20,6 +21,7 @@ contract TexRouter02 is ITexRouter02 {
   address public immutable override WETH;
 
   address public immutable recorder;
+  Mimc private immutable mimc;  
 
   address public owner;
 
@@ -77,7 +79,9 @@ contract TexRouter02 is ITexRouter02 {
       version: "1",
       chainId: 80001,
       verifyingContract: address(this)
-    }));  
+    }));
+
+    mimc = new Mimc();
   }
 
   receive() external payable {
@@ -448,140 +452,170 @@ contract TexRouter02 is ITexRouter02 {
   //0x5cae0310 swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)
 
   function batchSwap(
-    Swap[] memory swap, 
-    uint8[] memory v, 
-    bytes32[] memory r, 
+    Swap[] memory swap,
+    uint8[] memory v,
+    bytes32[] memory r,
     bytes32[] memory s
   ) public returns (uint256[] memory amounts) {
     bytes32 digest;
     for (uint256 i = 0; i < swap.length; i++) {
-      digest = keccak256(abi.encodePacked(
-        "\x19\x01",
-        DOMAIN_SEPARATOR,
-        _generateHashedMessage(swap[i])
-      ));
-      if(Recorder(recorder).validate(keccak256(abi.encodePacked(
-            swap[i].txOwner,
-            swap[i].functionSelector,
-            swap[i].amountIn,
-            swap[i].amountOut,
-            swap[i].path,
-            swap[i].to,
-            swap[i].nonce,
-            swap[i].deadline
-          )
-        ),
-        swap[i].txOwner)
-        && (swap[i].nonce == nonces[swap[i].txOwner]++)
-        && (ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner)) {
-        if(swap[i].functionSelector == 0x375734d9) {   // if else statement
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0x22b58410){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0x7ff36ab5){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactETHForTokens(uint256,address[],address,uint256)",
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0xfa3219d5){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0x9c91fcb5){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0xb05f579e){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapETHForExactTokens(address,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0xb1ca4936){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0xb6f9de95){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        } else if(swap[i].functionSelector == 0x5cae0310){
-          address(this).delegatecall(
-            abi.encodeWithSignature(
-              "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
-              swap[i].txOwner,
-              swap[i].amountIn,
-              swap[i].amountOut,
-              swap[i].path,
-              swap[i].to,
-              swap[i].deadline
-            )
-          );
-        }  
+      digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
+      if(ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner && Recorder(recorder).validate(digest, swap[i].txOwner)) {
+        if(swap[i].nonce == nonces[swap[i].txOwner]++) {
+          if(swap[i].functionSelector == 0x375734d9) {   
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0x22b58410){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0x7ff36ab5){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactETHForTokens(uint256,address[],address,uint256)",
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0xfa3219d5){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0x9c91fcb5){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactTokensForETH(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0xb05f579e){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapETHForExactTokens(address,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0xb1ca4936){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactTokensForTokensSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0xb6f9de95){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          } else if(swap[i].functionSelector == 0x5cae0310){
+            address(this).delegatecall(
+              abi.encodeWithSignature(
+                "swapExactTokensForETHSupportingFeeOnTransferTokens(address,uint256,uint256,address[],address,uint256)",
+                swap[i].txOwner,
+                swap[i].amountIn,
+                swap[i].amountOut,
+                swap[i].path,
+                swap[i].to,
+                swap[i].deadline
+              )
+            );
+          }
+        }
       }
-      
       Recorder(recorder).goForward();
     }
+  }
+
+  function disableTxHash(bytes32 _txHash) public {
+    nonces[msg.sender]++;
+    Recorder(recorder).disableTxHash(_txHash);
+  }
+
+  function claim(
+    uint256 round,
+    uint256 order,
+    bytes32 proofHash,
+    Swap memory swap,
+    uint8 v,
+    bytes32 r,
+    bytes32 s
+  ) public {
+    //claim 성공하면 token은 txowner 에게 전달되어야함
+    bytes32 txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap)));
+    bytes32 resultHash;
+    for (uint256 i = 0; i < order; i++) {
+      resultHash = keccak256(abi.encodePacked(resultHash | Recorder(recorder).roundTxHashes(round, i)));
+    }
+    require(
+      Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
+      "TexRouter: Claim is not accepted. TX hash and proof hash are available!!"
+    );
+
+    require(
+      proofHash != resultHash,
+      "TexRouter: Claim is not accepted. Signature is not valid"
+    );
+    bytes32 txMIMC = mimc.hash(
+      swap.txOwner,
+      swap.functionSelector,
+      swap.amountIn,
+      swap.amountOut,
+      swap.path,
+      swap.to,
+      swap.nonce,
+      swap.deadline
+    );
+    bytes32 digest = keccak256(abi.encode(round, order, proofHash, txMIMC, txHash));
+    require(
+      ecrecover(digest, v, r, s) == operator,
+      "TexRouter: Claim is not accepted. Check signature"
+    );
   }
 
   function swapExactTokensForTokens(

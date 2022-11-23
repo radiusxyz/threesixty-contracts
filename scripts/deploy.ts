@@ -29,6 +29,7 @@ async function main() {
   const recorder = await Recorder.deploy();
   await recorder.deployed();
   console.log("Recorder deployed to:", recorder.address);
+  await recorder.transferOwnership(accounts[2].address);
 
   // const TexFactory = await ethers.getContractFactory("TexFactory");
   // const texFactory = await TexFactory.deploy(accounts[0].address);
@@ -114,6 +115,7 @@ async function main() {
   const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[0].address, accounts[0].address);
   await texRouter02.deployed();
   console.log("TexRouter02 deployed to:", texRouter02.address);
+  await texRouter02.setOperator(accounts[2].address);
   await texRouter02.setFeeTo(accounts[2].address);
   
   const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
