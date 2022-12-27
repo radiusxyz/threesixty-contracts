@@ -51,11 +51,12 @@ contract TexRouter02 is ITexRouter02 {
     address[] path;
     address to;
     uint256 nonce;
+    uint256 availableFrom;
     uint256 deadline;
   }
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 deadline)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom, uint256 deadline)");
   bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
@@ -133,6 +134,7 @@ contract TexRouter02 is ITexRouter02 {
       keccak256(abi.encodePacked(swap.path)),
       swap.to,
       swap.nonce,
+      swap.availableFrom,
       swap.deadline
     ));
   }
@@ -464,10 +466,14 @@ contract TexRouter02 is ITexRouter02 {
   ) public returns (uint256[] memory amounts) {
     bytes32 digest;
     for (uint256 i = 0; i < swap.length; i++) {
+      require(
+        swap[i].availableFrom < now,
+        "TexRouter: False start "
+      );
       digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
       if(ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner && Recorder(recorder).validate(digest, swap[i].txOwner)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
-          if(swap[i].functionSelector == 0x375734d9) {   
+          if(swap[i].functionSelector == 0x375734d9) {
             address(this).delegatecall(
               abi.encodeWithSignature(
                 "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
