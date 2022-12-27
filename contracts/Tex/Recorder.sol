@@ -23,6 +23,11 @@ contract Recorder {
     _;
   }
 
+  function getRoundTxHashes(uint256 _round, uint256 size) public view returns (bytes32[] memory) {
+    uint256 round = _round;
+    return roundTxHashes[round];
+  }
+
   function transferOwnership(address newOwner) public onlyOwner {
     require(newOwner != address(0));
     owner = newOwner;
