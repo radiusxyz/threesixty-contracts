@@ -34,7 +34,7 @@ async function main() {
   // const TexFactory = await ethers.getContractFactory("TexFactory");
   // const texFactory = await TexFactory.deploy(accounts[0].address);
   // await texFactory.deployed();
-  const texFactoryAddress = "0xbAfD1699456Fa07681e574B0B30aB1A996e6373e"
+  const texFactoryAddress = "0x5757371414417b8c6caad45baef941abc7d3ab32"
   const texFactoryAbi = [
     {
       "constant": false,
@@ -111,8 +111,10 @@ async function main() {
 
   const pair = await texFactory.createPair(erc20_1.address, erc20_2.address);
 
+  const flashAddress = "0x522Cb07FFA9Fe1ae750Db8a8F632931cDca080FB";
+
   const TexRouter02 = await ethers.getContractFactory("TexRouter02");
-  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[0].address, accounts[0].address);
+  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[0].address, accounts[0].address, flashAddress);
   await texRouter02.deployed();
   console.log("TexRouter02 deployed to:", texRouter02.address);
   await texRouter02.setOperator(accounts[2].address);

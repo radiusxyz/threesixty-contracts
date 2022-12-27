@@ -10,6 +10,7 @@ import "./libraries/TexLibrary.sol";
 import "./libraries/SafeMath.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IWETH.sol";
+import "./interfaces/IFlashLoan.sol";
 
 import "./Recorder.sol";
 import "./Mimc.sol";
@@ -30,6 +31,8 @@ contract TexRouter02 is ITexRouter02 {
 
   address public operator;
   address public operatorSetter;
+
+  address public immutable flashLoan;
 
   mapping(address => uint256) public nonces;
 
@@ -65,7 +68,8 @@ contract TexRouter02 is ITexRouter02 {
     address _factory,
     address _WETH,
     address _feeToSetter,
-    address _operatorSetter
+    address _operatorSetter,
+    address _flashLoan
   ) public {
     recorder = _recorder;
     factory = _factory;
@@ -73,6 +77,7 @@ contract TexRouter02 is ITexRouter02 {
     feeToSetter = _feeToSetter;
     operatorSetter = _operatorSetter;
     owner = msg.sender;
+    flashLoan = _flashLoan;
 
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
       name: "Tex swap",
@@ -633,17 +638,18 @@ contract TexRouter02 is ITexRouter02 {
     ensure(deadline)
     returns (uint256[] memory amounts)
   {
-    amounts = TexLibrary.getAmountsOut(factory, amountIn-div(amountIn,2000), path);
+    amounts = TexLibrary.getAmountsOut(factory, amountIn, path);
+    //amounts = TexLibrary.getAmountsOut(factory, amountIn-div(amountIn,2000), path);
     require(
       amounts[amounts.length - 1] >= amountOutMin,
       "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
     );
-    TransferHelper.safeTransferFrom(
-      path[0],
-      origin,
-      feeTo,
-      div(amountIn,20)
-    );
+    // TransferHelper.safeTransferFrom(
+    //   path[0],
+    //   origin,
+    //   feeTo,
+    //   div(amountIn,20)
+    // );
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
@@ -651,6 +657,9 @@ contract TexRouter02 is ITexRouter02 {
       amounts[0]
     );
     _swap(amounts, path, to);
+
+    bytes memory params = abi.encode([path[0], address(this)]);
+    IFlashLoan(flashLoan).flashloan(path[path.length - 1], amounts[0], params);
   }
 
   function swapTokensForExactTokens(
