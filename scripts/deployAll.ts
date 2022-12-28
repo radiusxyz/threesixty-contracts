@@ -8,13 +8,13 @@ async function main() {
 
   const TexPair = await ethers.getContractFactory("TexPair");
   console.log("%% Modify TexLibrary.sol file if you change something in TexPair.sol");
-  console.log("TexPair address:", ethers.utils.solidityKeccak256(["bytes"],[TexPair.bytecode]));
-  
+  console.log("TexPair address:", ethers.utils.solidityKeccak256(["bytes"], [TexPair.bytecode]));
+
   const WETH9 = await ethers.getContractFactory("TestERC20");
   const weth = await WETH9.deploy("Wrapped Ether", "WETH", ethers.utils.parseUnits("1000000", 18));
   await weth.deployed();
   console.log("WETH9 deployed to:", weth.address);
-  
+
   const ERC20_1 = await ethers.getContractFactory("TestERC20");
   const erc20_1 = await ERC20_1.deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
   await erc20_1.deployed();
@@ -61,8 +61,8 @@ async function main() {
     1766730046
   );
 
-  const content = JSON.stringify({ 
-    weth: weth.address, 
+  const content = JSON.stringify({
+    weth: weth.address,
     gld: erc20_1.address,
     slvr: erc20_2.address,
     recorder: recorder.address,
@@ -71,7 +71,7 @@ async function main() {
     pair: pairAddress
   });
   writeFileSync("deployed/contracts.json", content);
-  copySync("artifacts","deployed/artifacts");
+  copySync("artifacts", "deployed/artifacts");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

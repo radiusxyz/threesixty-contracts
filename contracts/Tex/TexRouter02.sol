@@ -1,12 +1,12 @@
-
 pragma experimental ABIEncoderV2;
 pragma solidity =0.6.6;
 
-import "./interfaces/ITexFactory.sol";
-import "./libraries/TransferHelper.sol";
+import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
 import "./interfaces/ITexRouter02.sol";
-import "./libraries/TexLibrary.sol";
+import './libraries/UniswapV2Library.sol';
+
 import "./libraries/SafeMath.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IWETH.sol";
@@ -56,13 +56,16 @@ contract TexRouter02 is ITexRouter02 {
   }
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom, uint256 deadline)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom,uint256 deadline)");
   bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
     require(deadline >= block.timestamp, "TexRouter: EXPIRED");
     _;
   }
+
+event Stompesi(uint256 index);
+event Test(address a, address b);
 
   constructor(
     address _recorder,
@@ -149,10 +152,10 @@ contract TexRouter02 is ITexRouter02 {
     uint256 amountBMin
   ) internal virtual returns (uint256 amountA, uint256 amountB) {
     // create the pair if it doesn't exist yet
-    if (ITexFactory(factory).getPair(tokenA, tokenB) == address(0)) {
-      ITexFactory(factory).createPair(tokenA, tokenB);
+    if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) {
+      IUniswapV2Factory(factory).createPair(tokenA, tokenB);
     }
-    (uint256 reserveA, uint256 reserveB) = TexLibrary.getReserves(
+    (uint256 reserveA, uint256 reserveB) = UniswapV2Library.getReserves(
       factory,
       tokenA,
       tokenB
@@ -160,7 +163,7 @@ contract TexRouter02 is ITexRouter02 {
     if (reserveA == 0 && reserveB == 0) {
       (amountA, amountB) = (amountADesired, amountBDesired);
     } else {
-      uint256 amountBOptimal = TexLibrary.quote(
+      uint256 amountBOptimal = UniswapV2Library.quote(
         amountADesired,
         reserveA,
         reserveB
@@ -172,7 +175,7 @@ contract TexRouter02 is ITexRouter02 {
         );
         (amountA, amountB) = (amountADesired, amountBOptimal);
       } else {
-        uint256 amountAOptimal = TexLibrary.quote(
+        uint256 amountAOptimal = UniswapV2Library.quote(
           amountBDesired,
           reserveB,
           reserveA
@@ -215,10 +218,10 @@ contract TexRouter02 is ITexRouter02 {
       amountAMin,
       amountBMin
     );
-    address pair = TexLibrary.pairFor(factory, tokenA, tokenB);
+    address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
     TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
     TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
-    liquidity = ITexPair(pair).mint(to);
+    liquidity = IUniswapV2Pair(pair).mint(to);
   }
 
   function addLiquidityETH(
@@ -248,11 +251,11 @@ contract TexRouter02 is ITexRouter02 {
       amountTokenMin,
       amountETHMin
     );
-    address pair = TexLibrary.pairFor(factory, token, WETH);
+    address pair = UniswapV2Library.pairFor(factory, token, WETH);
     TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
     IWETH(WETH).deposit{ value: amountETH }();
     assert(IWETH(WETH).transfer(pair, amountETH));
-    liquidity = ITexPair(pair).mint(to);
+    liquidity = IUniswapV2Pair(pair).mint(to);
     // refund dust eth, if any
     if (msg.value > amountETH)
       TransferHelper.safeTransferETH(msg.sender, msg.value - amountETH);
@@ -274,10 +277,10 @@ contract TexRouter02 is ITexRouter02 {
     ensure(deadline)
     returns (uint256 amountA, uint256 amountB)
   {
-    address pair = TexLibrary.pairFor(factory, tokenA, tokenB);
-    ITexPair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
-    (uint256 amount0, uint256 amount1) = ITexPair(pair).burn(to);
-    (address token0, ) = TexLibrary.sortTokens(tokenA, tokenB);
+    address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
+    IUniswapV2Pair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
+    (uint256 amount0, uint256 amount1) = IUniswapV2Pair(pair).burn(to);
+    (address token0, ) = UniswapV2Library.sortTokens(tokenA, tokenB);
     (amountA, amountB) = tokenA == token0
       ? (amount0, amount1)
       : (amount1, amount0);
@@ -326,9 +329,9 @@ contract TexRouter02 is ITexRouter02 {
     bytes32 r,
     bytes32 s
   ) external virtual override returns (uint256 amountA, uint256 amountB) {
-    address pair = TexLibrary.pairFor(factory, tokenA, tokenB);
+    address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
     uint256 value = approveMax ? uint256(-1) : liquidity;
-    ITexPair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+    IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
     (amountA, amountB) = removeLiquidity(
       tokenA,
       tokenB,
@@ -352,9 +355,9 @@ contract TexRouter02 is ITexRouter02 {
     bytes32 r,
     bytes32 s
   ) external virtual override returns (uint256 amountToken, uint256 amountETH) {
-    address pair = TexLibrary.pairFor(factory, token, WETH);
+    address pair = UniswapV2Library.pairFor(factory, token, WETH);
     uint256 value = approveMax ? uint256(-1) : liquidity;
-    ITexPair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+    IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
     (amountToken, amountETH) = removeLiquidityETH(
       token,
       liquidity,
@@ -404,9 +407,9 @@ contract TexRouter02 is ITexRouter02 {
     bytes32 r,
     bytes32 s
   ) external virtual override returns (uint256 amountETH) {
-    address pair = TexLibrary.pairFor(factory, token, WETH);
+    address pair = UniswapV2Library.pairFor(factory, token, WETH);
     uint256 value = approveMax ? uint256(-1) : liquidity;
-    ITexPair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
+    IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
     amountETH = removeLiquidityETHSupportingFeeOnTransferTokens(
       token,
       liquidity,
@@ -426,15 +429,15 @@ contract TexRouter02 is ITexRouter02 {
   ) internal virtual {
     for (uint256 i; i < path.length - 1; i++) {
       (address input, address output) = (path[i], path[i + 1]);
-      (address token0, ) = TexLibrary.sortTokens(input, output);
+      (address token0, ) = UniswapV2Library.sortTokens(input, output);
       uint256 amountOut = amounts[i + 1];
       (uint256 amount0Out, uint256 amount1Out) = input == token0
         ? (uint256(0), amountOut)
         : (amountOut, uint256(0));
       address to = i < path.length - 2
-        ? TexLibrary.pairFor(factory, output, path[i + 2])
+        ? UniswapV2Library.pairFor(factory, output, path[i + 2])
         : _to;
-      ITexPair(TexLibrary.pairFor(factory, input, output)).swap(
+      IUniswapV2Pair(UniswapV2Library.pairFor(factory, input, output)).swap(
         amount0Out,
         amount1Out,
         to,
@@ -471,21 +474,28 @@ contract TexRouter02 is ITexRouter02 {
         "TexRouter: False start "
       );
       digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
+      emit Stompesi(0);
+      emit Test(ecrecover(digest, v[i], r[i], s[i]), swap[i].txOwner);
       if(ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner && Recorder(recorder).validate(digest, swap[i].txOwner)) {
+        emit Stompesi(1);
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
+          emit Stompesi(2);
           if(swap[i].functionSelector == 0x375734d9) {
-            address(this).delegatecall(
-              abi.encodeWithSignature(
-                "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
-                swap[i].txOwner,
-                swap[i].amountIn,
-                swap[i].amountOut,
-                swap[i].path,
-                swap[i].to,
-                swap[i].deadline
-              )
-            );
+            emit Stompesi(3);
+            swapExactTokensForTokens(swap[i].txOwner, swap[i].amountIn, swap[i].amountOut, swap[i].path, swap[i].to, swap[i].deadline);
           }
+          //   address(this).delegatecall(
+          //     abi.encodeWithSignature(
+          //       "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
+          //       swap[i].txOwner,
+          //       swap[i].amountIn,
+          //       swap[i].amountOut,
+          //       swap[i].path,
+          //       swap[i].to,
+          //       swap[i].deadline
+          //     )
+          //   );
+          // }
           // } else if(swap[i].functionSelector == 0x22b58410){
           //   address(this).delegatecall(
           //     abi.encodeWithSignature(
@@ -580,7 +590,9 @@ contract TexRouter02 is ITexRouter02 {
           // }
         }
       }
+      emit Stompesi(8);
       Recorder(recorder).goForward();
+      emit Stompesi(9);
     }
   }
 
@@ -630,22 +642,22 @@ contract TexRouter02 is ITexRouter02 {
     );
   }
 
-  function swapExactTokensForTokens(
+  function  swapExactTokensForTokens(
     address origin,
     uint256 amountIn,
     uint256 amountOutMin,
-    address[] calldata path,
+    address[] memory path,
     address to,
     uint256 deadline
   )
-    external
+    public
     virtual
     override
     ensure(deadline)
     returns (uint256[] memory amounts)
   {
-    amounts = TexLibrary.getAmountsOut(factory, amountIn, path);
-    //amounts = TexLibrary.getAmountsOut(factory, amountIn-div(amountIn,2000), path);
+    amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);
+    // amounts = UniswapV2Library.getAmountsOut(factory, amountIn-div(amountIn, 2000), path);
     require(
       amounts[amounts.length - 1] >= amountOutMin,
       "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -654,18 +666,20 @@ contract TexRouter02 is ITexRouter02 {
     //   path[0],
     //   origin,
     //   feeTo,
-    //   div(amountIn,20)
+    //   div(amountIn,2000)
     // );
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
     _swap(amounts, path, to);
-
-    bytes memory params = abi.encode([path[0], address(this)]);
-    IFlashLoan(flashLoan).flashloan(path[path.length - 1], amounts[0], params);
+  
+    // bytes memory params = abi.encode([path[0], address(this)]);
+    // emit Stompesi(6);
+    // IFlashLoan(flashLoan).flashloan(path[path.length - 1], amounts[path.length - 1], params);
+    // emit Stompesi(7);
   }
 
   function swapTokensForExactTokens(
@@ -682,12 +696,12 @@ contract TexRouter02 is ITexRouter02 {
     ensure(deadline)
     returns (uint256[] memory amounts)
   {
-    amounts = TexLibrary.getAmountsIn(factory, amountOut, path);
+    amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
     require(amounts[0] <= amountInMax, "TexRouter: EXCESSIVE_INPUT_AMOUNT");
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
     _swap(amounts, path, to);
@@ -707,7 +721,7 @@ contract TexRouter02 is ITexRouter02 {
     returns (uint256[] memory amounts)
   {
     require(path[0] == WETH, "TexRouter: INVALID_PATH");
-    amounts = TexLibrary.getAmountsOut(factory, msg.value, path);
+    amounts = UniswapV2Library.getAmountsOut(factory, msg.value, path);
     require(
       amounts[amounts.length - 1] >= amountOutMin,
       "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -715,7 +729,7 @@ contract TexRouter02 is ITexRouter02 {
     IWETH(WETH).deposit{ value: amounts[0] }();
     assert(
       IWETH(WETH).transfer(
-        TexLibrary.pairFor(factory, path[0], path[1]),
+        UniswapV2Library.pairFor(factory, path[0], path[1]),
         amounts[0]
       )
     );
@@ -737,12 +751,12 @@ contract TexRouter02 is ITexRouter02 {
     returns (uint256[] memory amounts)
   {
     require(path[path.length - 1] == WETH, "TexRouter: INVALID_PATH");
-    amounts = TexLibrary.getAmountsIn(factory, amountOut, path);
+    amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
     require(amounts[0] <= amountInMax, "TexRouter: EXCESSIVE_INPUT_AMOUNT");
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
     _swap(amounts, path, address(this));
@@ -765,7 +779,7 @@ contract TexRouter02 is ITexRouter02 {
     returns (uint256[] memory amounts)
   {
     require(path[path.length - 1] == WETH, "TexRouter: INVALID_PATH");
-    amounts = TexLibrary.getAmountsOut(factory, amountIn, path);
+    amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);
     require(
       amounts[amounts.length - 1] >= amountOutMin,
       "TexRouter: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -773,7 +787,7 @@ contract TexRouter02 is ITexRouter02 {
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amounts[0]
     );
     _swap(amounts, path, address(this));
@@ -796,12 +810,12 @@ contract TexRouter02 is ITexRouter02 {
     returns (uint256[] memory amounts)
   {
     require(path[0] == WETH, "TexRouter: INVALID_PATH");
-    amounts = TexLibrary.getAmountsIn(factory, amountOut, path);
+    amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
     require(amounts[0] <= msg.value, "TexRouter: EXCESSIVE_INPUT_AMOUNT");
     IWETH(WETH).deposit{ value: amounts[0] }();
     assert(
       IWETH(WETH).transfer(
-        TexLibrary.pairFor(factory, path[0], path[1]),
+        UniswapV2Library.pairFor(factory, path[0], path[1]),
         amounts[0]
       )
     );
@@ -819,8 +833,8 @@ contract TexRouter02 is ITexRouter02 {
   ) internal virtual {
     for (uint256 i; i < path.length - 1; i++) {
       (address input, address output) = (path[i], path[i + 1]);
-      (address token0, ) = TexLibrary.sortTokens(input, output);
-      ITexPair pair = ITexPair(TexLibrary.pairFor(factory, input, output));
+      (address token0, ) = UniswapV2Library.sortTokens(input, output);
+      IUniswapV2Pair pair = IUniswapV2Pair(UniswapV2Library.pairFor(factory, input, output));
       uint256 amountInput;
       uint256 amountOutput;
       {
@@ -830,7 +844,7 @@ contract TexRouter02 is ITexRouter02 {
           ? (reserve0, reserve1)
           : (reserve1, reserve0);
         amountInput = IERC20(input).balanceOf(address(pair)).sub(reserveInput);
-        amountOutput = TexLibrary.getAmountOut(
+        amountOutput = UniswapV2Library.getAmountOut(
           amountInput,
           reserveInput,
           reserveOutput
@@ -840,7 +854,7 @@ contract TexRouter02 is ITexRouter02 {
         ? (uint256(0), amountOutput)
         : (amountOutput, uint256(0));
       address to = i < path.length - 2
-        ? TexLibrary.pairFor(factory, output, path[i + 2])
+        ? UniswapV2Library.pairFor(factory, output, path[i + 2])
         : _to;
       pair.swap(amount0Out, amount1Out, to, new bytes(0));
     }
@@ -857,7 +871,7 @@ contract TexRouter02 is ITexRouter02 {
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amountIn
     );
     uint256 balanceBefore = IERC20(path[path.length - 1]).balanceOf(to);
@@ -880,7 +894,7 @@ contract TexRouter02 is ITexRouter02 {
     IWETH(WETH).deposit{ value: amountIn }();
     assert(
       IWETH(WETH).transfer(
-        TexLibrary.pairFor(factory, path[0], path[1]),
+        UniswapV2Library.pairFor(factory, path[0], path[1]),
         amountIn
       )
     );
@@ -905,7 +919,7 @@ contract TexRouter02 is ITexRouter02 {
     TransferHelper.safeTransferFrom(
       path[0],
       origin,
-      TexLibrary.pairFor(factory, path[0], path[1]),
+      UniswapV2Library.pairFor(factory, path[0], path[1]),
       amountIn
     );
     _swapSupportingFeeOnTransferTokens(path, address(this));
@@ -921,7 +935,7 @@ contract TexRouter02 is ITexRouter02 {
     uint256 reserveA,
     uint256 reserveB
   ) public pure virtual override returns (uint256 amountB) {
-    return TexLibrary.quote(amountA, reserveA, reserveB);
+    return UniswapV2Library.quote(amountA, reserveA, reserveB);
   }
 
   function getAmountOut(
@@ -929,7 +943,7 @@ contract TexRouter02 is ITexRouter02 {
     uint256 reserveIn,
     uint256 reserveOut
   ) public pure virtual override returns (uint256 amountOut) {
-    return TexLibrary.getAmountOut(amountIn, reserveIn, reserveOut);
+    return UniswapV2Library.getAmountOut(amountIn, reserveIn, reserveOut);
   }
 
   function getAmountIn(
@@ -937,7 +951,7 @@ contract TexRouter02 is ITexRouter02 {
     uint256 reserveIn,
     uint256 reserveOut
   ) public pure virtual override returns (uint256 amountIn) {
-    return TexLibrary.getAmountIn(amountOut, reserveIn, reserveOut);
+    return UniswapV2Library.getAmountIn(amountOut, reserveIn, reserveOut);
   }
 
   function getAmountsOut(uint256 amountIn, address[] memory path)
@@ -947,7 +961,7 @@ contract TexRouter02 is ITexRouter02 {
     override
     returns (uint256[] memory amounts)
   {
-    return TexLibrary.getAmountsOut(factory, amountIn, path);
+    return UniswapV2Library.getAmountsOut(factory, amountIn, path);
   }
 
   function getAmountsIn(uint256 amountOut, address[] memory path)
@@ -957,7 +971,7 @@ contract TexRouter02 is ITexRouter02 {
     override
     returns (uint256[] memory amounts)
   {
-    return TexLibrary.getAmountsIn(factory, amountOut, path);
+    return UniswapV2Library.getAmountsIn(factory, amountOut, path);
   }
 }
 
