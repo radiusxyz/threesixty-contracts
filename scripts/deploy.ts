@@ -22,7 +22,7 @@ async function main() {
   console.log("Recorder deployed to:", recorder.address);
   await recorder.transferOwnership(accounts[2].address);
 
-  const ThreesixtyRouter02 = await ethers.getContractFactory("Router02");
+  const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
   const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address);
   await threesixtyRouter02.deployed();
   console.log("TexRouter02 deployed to:", threesixtyRouter02.address);
