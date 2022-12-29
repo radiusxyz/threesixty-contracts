@@ -11,7 +11,7 @@ library Mimc {
     address to,
     uint256 nonce,
     uint256 deadline
-  ) external pure returns (bytes32) {  
+  ) internal pure returns (bytes32) {  
     uint256[] memory _items = new uint256[](10);
     _items[0] = uint256(txOwner);
     _items[1] = uint256(bytes32(functionSelector) >> 224) ;

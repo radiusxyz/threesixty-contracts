@@ -25,7 +25,7 @@ async function main() {
   const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
   const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address);
   await threesixtyRouter02.deployed();
-  console.log("TexRouter02 deployed to:", threesixtyRouter02.address);
+  console.log("360Router02 deployed to:", threesixtyRouter02.address);
   await threesixtyRouter02.setOperator(accounts[2].address);
   await threesixtyRouter02.setFeeTo(accounts[2].address);
 
