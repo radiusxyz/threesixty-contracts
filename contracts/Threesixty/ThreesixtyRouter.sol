@@ -9,9 +9,7 @@ import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
 
 import "../Backer/interfaces/IBacker.sol";
-
 import "./interfaces/IThreesixtyRouter.sol";
-
 import "./Recorder.sol";
 import "./Mimc.sol";
 
@@ -469,11 +467,14 @@ contract ThreesixtyRouter is IThreesixtyRouter {
   ) public {
     bytes32 digest;
     for (uint256 i = 0; i < swap.length; i++) {
-      bool success = false;
       require(
         swap[i].availableFrom < now,
         "ThreesixtyRouter: False start "
       );
+    }
+
+    for (uint256 i = 0; i < swap.length; i++) {
+      bool success = false;
       digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
       if(ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner && Recorder(recorder).validate(digest, swap[i].txOwner)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
