@@ -5,8 +5,10 @@ import { copySync } from "fs-extra"
 async function main() {
   const accounts = await ethers.getSigners()
 
-  const texFactory = await ethers.getContractAt("ITexFactory", "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32")
-  console.log("TexFactory deployed to:", texFactory.address)
+  const backerAddress = "0xE6498Cd36cD93701237a89f68151582d2cf3EFFB"
+
+  const wETHAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+  const factoryAddress = "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32"
 
   const Recorder = await ethers.getContractFactory("Recorder")
   const recorder = await Recorder.deploy()
@@ -14,34 +16,31 @@ async function main() {
   console.log("Recorder deployed to:", recorder.address)
   await recorder.transferOwnership(accounts[0].address)
 
-  const wETHContractAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
-  const flashAddress = "0x522Cb07FFA9Fe1ae750Db8a8F632931cDca080FB"
-
-  const TexRouter02 = await ethers.getContractFactory("TexRouter02")
-  const texRouter02 = await TexRouter02.deploy(
-    recorder.address,
-    texFactory.address,
-    wETHContractAddress,
-    accounts[0].address,
-    accounts[0].address,
-    flashAddress
-  )
-  await texRouter02.deployed()
-  console.log("TexRouter02 deployed to:", texRouter02.address)
-  await texRouter02.setOperator(accounts[0].address)
-  await texRouter02.setFeeTo(accounts[0].address)
-
   const Mimc = await ethers.getContractFactory("Mimc")
   const mimcContract = await Mimc.deploy();
-  await texRouter02.deployed()
+  await mimcContract.deployed()
   console.log("Mimc deployed to:", mimcContract.address)
 
+  const ThreesixtyRouter = await ethers.getContractFactory("ThreesixtyRouter")
+  const threesixtyRouter02 = await ThreesixtyRouter.deploy(
+    recorder.address,
+    factoryAddress,
+    wETHAddress,
+    accounts[0].address,
+    accounts[0].address,
+    backerAddress
+  )
+  await threesixtyRouter02.deployed()
+  console.log("ThreesixtyRouter deployed to:", threesixtyRouter02.address)
+  await threesixtyRouter02.setOperator(accounts[0].address)
+  await threesixtyRouter02.setFeeTo(accounts[0].address)
+
   const content = JSON.stringify({
-    weth: wETHContractAddress,
+    weth: wETHAddress,
     recorder: recorder.address,
-    factory: texFactory.address,
-    router: texRouter02.address,
-    mimc: mimcContract.address
+    factory: factoryAddress,
+    mimc: mimcContract.address,
+    router: threesixtyRouter02.address,
   })
   writeFileSync("deployed/contracts.json", content)
   copySync("artifacts", "deployed/artifacts")

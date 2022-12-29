@@ -6,13 +6,13 @@ async function main() {
   const aTokenContractAddress = "0x5E37430286E962451a0Aa2FB58528C7D82c9C33C"
   const bTokenContractAddress = "0x9aa7fec87ca69695dd1f879567ccf49f3ba417e2"
 
-  const routerContract = await ethers.getContractAt("TexRouter02", routerContractAddress)
+  const routerContract = await ethers.getContractAt("ThreesixtyRouter", routerContractAddress)
   const factoryContractAddress = await routerContract.factory()
-  const factoryContract = await ethers.getContractAt("ITexFactory", factoryContractAddress)
+  const factoryContract = await ethers.getContractAt("IThreesixtyFactory", factoryContractAddress)
 
   const pairContractAddress = await factoryContract.getPair(aTokenContractAddress, bTokenContractAddress)
 
-  const pairContract = await ethers.getContractAt("ITexPair", pairContractAddress)
+  const pairContract = await ethers.getContractAt("IThreesixtyPair", pairContractAddress)
   const reserves = await pairContract.getReserves()
 
   const aTokenContract = await ethers.getContractAt("ERC20", await pairContract.token0())
