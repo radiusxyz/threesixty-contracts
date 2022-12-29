@@ -37,6 +37,7 @@ async function main() {
 
   const content = JSON.stringify({
     weth: wETHAddress,
+    backer: backerAddress,
     recorder: recorder.address,
     factory: factoryAddress,
     mimc: mimcContract.address,
