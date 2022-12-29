@@ -6,24 +6,15 @@ async function main() {
 
   const accounts = await ethers.getSigners();
 
-  const TexPair = await ethers.getContractFactory("TexPair");
-  console.log("%% Modify TexLibrary.sol file if you change something in TexPair.sol");
-  console.log("TexPair address:", ethers.utils.solidityKeccak256(["bytes"],[TexPair.bytecode]));
-  
-  const WETH9 = await ethers.getContractFactory("TestERC20");
-  const weth = await WETH9.deploy("Wrapped Ether", "WETH", ethers.utils.parseUnits("1000000", 18));
-  await weth.deployed();
-  console.log("WETH9 deployed to:", weth.address);
-  
-  const ERC20_1 = await ethers.getContractFactory("TestERC20");
-  const erc20_1 = await ERC20_1.deploy("Gold token", "GLD", ethers.utils.parseUnits("1000000", 18));
-  await erc20_1.deployed();
-  console.log("GLDToken deployed to:", erc20_1.address);
+  const factoryAddress = "0x5757371414417b8c6caad45baef941abc7d3ab32"; //QuickSwap Factory
+  const wETHAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
 
-  const ERC20_2 = await ethers.getContractFactory("TestERC20");
-  const erc20_2 = await ERC20_2.deploy("Silver token", "SLVR", ethers.utils.parseUnits("1000000", 18));
-  await erc20_2.deployed();
-  console.log("SLVRToken deployed to:", erc20_2.address);
+  const poolAddressesProviderAddress = "0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6";
+
+  const Backer = await ethers.getContractFactory("Backer");
+  const backer = await Backer.deploy(poolAddressesProviderAddress);
+  await backer.deployed();
+  console.log("Backer deployed to:", backer.address);
 
   const Recorder = await ethers.getContractFactory("Recorder");
   const recorder = await Recorder.deploy();
@@ -31,120 +22,19 @@ async function main() {
   console.log("Recorder deployed to:", recorder.address);
   await recorder.transferOwnership(accounts[2].address);
 
-  // const TexFactory = await ethers.getContractFactory("TexFactory");
-  // const texFactory = await TexFactory.deploy(accounts[0].address);
-  // await texFactory.deployed();
-  const texFactoryAddress = "0x5757371414417b8c6caad45baef941abc7d3ab32"
-  const texFactoryAbi = [
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "tokenA",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "tokenB",
-          "type": "address"
-        }
-      ],
-      "name": "createPair",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "pair",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "getPair",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_feeToSetter",
-          "type": "address"
-        }
-      ],
-      "name": "setFeeToSetter",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ]
-  const texFactory = new ethers.Contract(texFactoryAddress,texFactoryAbi,accounts[0]);
-  //await texFactory.setFeeToSetter(accounts[2].address);
-  console.log("TexFactory deployed to:", texFactory.address);
-  //console.log("FeeToSetterAddress:", accounts[2].address);
+  const ThreesixtyRouter02 = await ethers.getContractFactory("Router02");
+  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address);
+  await threesixtyRouter02.deployed();
+  console.log("TexRouter02 deployed to:", threesixtyRouter02.address);
+  await threesixtyRouter02.setOperator(accounts[2].address);
+  await threesixtyRouter02.setFeeTo(accounts[2].address);
 
-  const pair = await texFactory.createPair(erc20_1.address, erc20_2.address);
-
-  const flashAddress = "0x522Cb07FFA9Fe1ae750Db8a8F632931cDca080FB";
-
-  const TexRouter02 = await ethers.getContractFactory("TexRouter02");
-  const texRouter02 = await TexRouter02.deploy(recorder.address, texFactory.address, weth.address, accounts[0].address, accounts[0].address, flashAddress);
-  await texRouter02.deployed();
-  console.log("TexRouter02 deployed to:", texRouter02.address);
-  await texRouter02.setOperator(accounts[2].address);
-  await texRouter02.setFeeTo(accounts[2].address);
-  
-  const pairAddress = await texFactory.getPair(erc20_1.address, erc20_2.address);
-  console.log("pairAddress:", pairAddress);
-
-  await erc20_1.approve(texRouter02.address, ethers.utils.parseUnits("10000", 18));
-  await erc20_2.approve(texRouter02.address, ethers.utils.parseUnits("10000", 18));
-
-  await texRouter02.addLiquidity(
-    erc20_1.address,
-    erc20_2.address,
-    ethers.utils.parseUnits("2", 18),
-    ethers.utils.parseUnits("2", 18),
-    ethers.utils.parseUnits("1", 18),
-    ethers.utils.parseUnits("1", 18),
-    accounts[2].address,
-    1766730046
-  );
-
-  const content = JSON.stringify({ 
-    weth: weth.address, 
-    gld: erc20_1.address,
-    slvr: erc20_2.address,
+  const content = JSON.stringify({
+    weth: wETHAddress,
     recorder: recorder.address,
-    factory: texFactory.address,
-    router: texRouter02.address,
-    pair: pairAddress
+    factory: factoryAddress,
+    router: threesixtyRouter02.address,
+    backer: backer.address
   });
   writeFileSync("deployed/contracts.json", content);
   copySync("artifacts","deployed/artifacts");

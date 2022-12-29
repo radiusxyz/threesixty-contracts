@@ -1,8 +1,8 @@
 pragma solidity >=0.6.2;
 
-import "./ITexRouter01.sol";
+import "./IThreesixtyRouter01.sol";
 
-interface ITexRouter02 is ITexRouter01 {
+interface IThreesixtyRouter02 is IThreesixtyRouter01 {
   function removeLiquidityETHSupportingFeeOnTransferTokens(
     address token,
     uint256 liquidity,

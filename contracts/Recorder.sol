@@ -23,7 +23,7 @@ contract Recorder {
     _;
   }
 
-  function getRoundTxHashes(uint256 _round, uint256 size) public view returns (bytes32[] memory) {
+  function getRoundTxHashes(uint256 _round) public view returns (bytes32[] memory) {
     uint256 round = _round;
     return roundTxHashes[round];
   }

@@ -1,9 +1,7 @@
-pragma experimental ABIEncoderV2;
-pragma solidity ^0.6.6;
 
-import "hardhat/console.sol";
+pragma solidity =0.6.12;
 
-contract Mimc {
+library Mimc {
   function hash(
     address txOwner,
     bytes4 functionSelector,
@@ -13,7 +11,7 @@ contract Mimc {
     address to,
     uint256 nonce,
     uint256 deadline
-  ) public pure returns (bytes32) {  
+  ) external pure returns (bytes32) {  
     uint256[] memory _items = new uint256[](10);
     _items[0] = uint256(txOwner);
     _items[1] = uint256(bytes32(functionSelector) >> 224) ;
