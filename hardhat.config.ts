@@ -35,26 +35,8 @@ const config: HardhatUserConfig = {
     artifacts: "./artifacts"
   },
   networks: {
-    optimism_kovan: {
-      url: process.env.OPTIMISM_KOVAN_URL || "",
-      accounts: [
-        process.env.PRIV_KEY0 as any,
-        process.env.PRIV_KEY1 as any,
-        process.env.PRIV_KEY2 as any,
-      ],
-      gas: 10000000,
-    },
     matic_mumbai: {
       url: process.env.MUMBAI_URL || "",
-      accounts: [
-        process.env.PRIV_KEY0 as any,
-        process.env.PRIV_KEY1 as any,
-        process.env.PRIV_KEY2 as any,
-      ],
-      gas: 10000000,
-    },
-    DEV: {
-      url: process.env.DEV_URL || "",
       accounts: [
         process.env.PRIV_KEY0 as any,
         process.env.PRIV_KEY1 as any,
