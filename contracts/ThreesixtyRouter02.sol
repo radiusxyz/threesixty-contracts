@@ -36,7 +36,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
 
   mapping(address => uint256) public nonces;
 
-  uint256 reimbursementAmount;
+  uint256 public reimbursementAmount;
 
   struct EIP712Domain {
     string  name;
@@ -59,7 +59,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
   bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom,uint256 deadline)");
-  bytes32 public DOMAIN_SEPARATOR;
+  bytes32 public DOMAIN_SEPARATOR;  
 
   modifier ensure(uint256 deadline) {
     require(deadline >= block.timestamp, "360Router: EXPIRED");
@@ -89,7 +89,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     reimbursementAmount = _reimbursementAmount;
 
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
-      name: "Tex swap",
+      name: "Threesixty swap",
       version: "1",
       chainId: 80001,
       verifyingContract: address(this)
@@ -101,22 +101,22 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   }
 
   function setFeeTo(address _feeTo) external {
-    require(msg.sender == feeToSetter, "Tex: FORBIDDEN");
+    require(msg.sender == feeToSetter, "360: FORBIDDEN");
     feeTo = _feeTo;
   }
 
   function setFeeToSetter(address _feeToSetter) external {
-    require(msg.sender == feeToSetter || msg.sender == owner, "Tex: FORBIDDEN");
+    require(msg.sender == feeToSetter || msg.sender == owner, "360: FORBIDDEN");
     feeToSetter = _feeToSetter;
   }
 
   function setOperator(address _operator) external {
-    require(msg.sender == operatorSetter, "Tex: FORBIDDEN");
+    require(msg.sender == operatorSetter, "360: FORBIDDEN");
     operator = _operator;
   }
 
   function setOperatorSetter(address _operatorSetter) external {
-    require(msg.sender == operatorSetter || msg.sender == owner, "Tex: FORBIDDEN");
+    require(msg.sender == operatorSetter || msg.sender == owner, "360: FORBIDDEN");
     operatorSetter = _operatorSetter;
   }
 
@@ -321,7 +321,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       amountETH = removeLiquidityETHSupportingFeeOnTransferTokens(
           token, liquidity, amountTokenMin, amountETHMin, to, deadline
       );
-  }  
+  }
 
   // **** SWAP ****
   // requires the initial amount to have already been sent to the first pair
