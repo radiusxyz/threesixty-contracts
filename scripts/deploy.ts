@@ -34,6 +34,8 @@ async function main() {
   await threesixtyRouter02.setOperator(accounts[2].address);
   await threesixtyRouter02.setFeeTo(accounts[2].address);
 
+  await vault.setOperator(threesixtyRouter02.address);
+
 
 
   const content = JSON.stringify({
@@ -41,7 +43,8 @@ async function main() {
     recorder: recorder.address,
     factory: factoryAddress,
     router: threesixtyRouter02.address,
-    backer: backer.address
+    backer: backer.address,
+    vault: vault.address
   });
   writeFileSync("deployed/contracts.json", content);
   copySync("artifacts","deployed/artifacts");
