@@ -28,7 +28,7 @@ async function main() {
   console.log("Vault deployed to:", vault.address);
 
   const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
-  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, vault.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address, ethers.utils.formatEther( 0.0001 ));
+  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, vault.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address, ethers.utils.parseUnits('1', 18));
   await threesixtyRouter02.deployed();
   console.log("360Router02 deployed to:", threesixtyRouter02.address);
   await threesixtyRouter02.setOperator(accounts[2].address);
