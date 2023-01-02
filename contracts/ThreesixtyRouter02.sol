@@ -13,6 +13,7 @@ import "./interfaces/IWETH.sol";
 import "./interfaces/IBacker.sol";
 
 import "./Recorder.sol";
+import "./Vault.sol";
 
 contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   using SafeMath for uint256;
@@ -21,6 +22,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   address public immutable override WETH;
 
   address public immutable recorder;
+  address public immutable vault;
 
   address public owner;
 
@@ -33,6 +35,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   address public immutable backer;
 
   mapping(address => uint256) public nonces;
+
+  uint256 reimbursementAmount;
 
   struct EIP712Domain {
     string  name;
@@ -66,19 +70,23 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
 
   constructor(
     address _recorder,
+    address _vault,
     address _factory,
     address _WETH,
     address _feeToSetter,
     address _operatorSetter,
-    address _backer
+    address _backer,
+    uint256 _reimbursementAmount
   ) public {
     recorder = _recorder;
+    vault = _vault;
     factory = _factory;
     WETH = _WETH;
     feeToSetter = _feeToSetter;
     operatorSetter = _operatorSetter;
     owner = msg.sender;
     backer = _backer;
+    reimbursementAmount = _reimbursementAmount;
 
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
       name: "Tex swap",
@@ -410,6 +418,10 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   ) public {
     //claim 성공하면 token은 txowner 에게 전달되어야함
     bytes32 txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap)));
+    require(
+      Recorder(recorder).reimbursedTxHashes(txHash) != true,
+      "360Router: Reimbursed TX!!"
+    );
     bytes32 resultHash;
     for (uint256 i = 0; i < order; i++) {
       resultHash = keccak256(abi.encodePacked(resultHash | Recorder(recorder).roundTxHashes(round, i)));
@@ -438,6 +450,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       ecrecover(digest, v, r, s) == operator,
       "360Router: Claim is not accepted. Check signature"
     );
+    Vault(vault).withDrawAmount(swap.txOwner, reimbursementAmount);
+    Recorder(recorder).setReimbursedTxHashes(txHash);
   }
 
   function swapExactTokensForTokens(

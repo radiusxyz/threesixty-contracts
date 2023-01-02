@@ -8,6 +8,7 @@ async function main() {
 
   const factoryAddress = "0x5757371414417b8c6caad45baef941abc7d3ab32"; //QuickSwap Factory
   const wETHAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
+  const maticAddress = "0xCCc379b885ABA6820304E8eC9DC979Bdd8941b6e";
 
   const poolAddressesProviderAddress = "0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6";
 
@@ -22,12 +23,18 @@ async function main() {
   console.log("Recorder deployed to:", recorder.address);
   await recorder.transferOwnership(accounts[2].address);
 
+  const Vault = await ethers.getContractFactory("Vault");
+  const vault = await Vault.deploy(maticAddress);
+  console.log("Vault deployed to:", vault.address);
+
   const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
-  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address);
+  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, vault.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address, ethers.utils.formatEther( 1 ));
   await threesixtyRouter02.deployed();
   console.log("360Router02 deployed to:", threesixtyRouter02.address);
   await threesixtyRouter02.setOperator(accounts[2].address);
   await threesixtyRouter02.setFeeTo(accounts[2].address);
+
+
 
   const content = JSON.stringify({
     weth: wETHAddress,

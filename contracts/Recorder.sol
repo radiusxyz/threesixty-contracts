@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.6.6;
+pragma solidity ^0.6.12;
 
 contract Recorder {
   uint256 public currentRound;
@@ -11,6 +11,7 @@ contract Recorder {
   mapping(uint256 => bytes32[]) public roundTxHashes;
   mapping(bytes32 => mapping(address => bool)) public useOfVeto;
   mapping(bytes32 => bool) public skippedTxHashes;
+  mapping(bytes32 => bool) public reimbursedTxHashes;
 
   event Commit(uint256 round, uint256 index);
 
@@ -68,5 +69,9 @@ contract Recorder {
     }    
     currentRound++;
     currentIndex = 0;
+  }
+
+  function setReimbursedTxHashes(bytes32 _txHash) public onlyOwner {
+    reimbursedTxHashes[_txHash] = true;
   }
 }
