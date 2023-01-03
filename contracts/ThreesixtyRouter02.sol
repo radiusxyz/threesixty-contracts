@@ -59,7 +59,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
   bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom,uint256 deadline)");
-  bytes32 public DOMAIN_SEPARATOR;  
+  bytes32 constant CLAIMDOMAIN_TYPEHASH = keccak256("Claim(uint256 round,uint256 order,bytes32 proofHash,Swap memory swap,uint8 v,bytes32 r,bytes32 s)");
+  bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
     require(deadline >= block.timestamp, "360Router: EXPIRED");
@@ -430,7 +431,6 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
       "360Router: TX hash and proof hash are available!!"
     );
-
     require(
       proofHash != resultHash,
       "360Router: Signature is not valid"
@@ -445,7 +445,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       swap.nonce,
       swap.deadline
     );
-    bytes32 digest = keccak256(abi.encode(round, order, proofHash, txMIMC, txHash));
+    bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, keccak256(abi.encode(CLAIMDOMAIN_TYPEHASH, round, order, txMIMC, txHash, proofHash))));
     require(
       ecrecover(digest, v, r, s) == operator,
       "360Router: Claim is not accepted. Check signature"
@@ -496,10 +496,11 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     backerPath[2] = 0x21C561e551638401b937b03fE5a0a0652B99B7DD;
     backerPath[3] = path[1];
     
-    amounts = UniswapV2Library.getAmountsOut(factory, amounts[1], backerPath);
-    if (amounts[0] < amounts[3]) {
-      IBacker(backer).backup(amounts[0], backerPath, deadline);
-    }
+    IBacker(backer).backup(amounts[0], backerPath, deadline);
+    // amounts = UniswapV2Library.getAmountsOut(factory, amounts[1], backerPath);
+    // if (amounts[0] < amounts[3]) {
+    //   IBacker(backer).backup(amounts[0], backerPath, deadline);
+    // }
   }
 
   function swapTokensForExactTokens(
