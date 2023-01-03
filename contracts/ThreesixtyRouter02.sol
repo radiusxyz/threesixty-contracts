@@ -59,7 +59,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
   bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom,uint256 deadline)");
-  bytes32 constant CLAIMDOMAIN_TYPEHASH = keccak256("Claim(uint256 round,uint256 order,bytes32 proofHash,Swap memory swap,uint8 v,bytes32 r,bytes32 s)");
+  bytes32 constant CLAIMDOMAIN_TYPEHASH = keccak256("Claim(uint256 round,uint256 order,bytes32 mimcHash,bytes32 txHash,bytes32 proofHash)");
   bytes32 public DOMAIN_SEPARATOR;
 
   modifier ensure(uint256 deadline) {
@@ -431,6 +431,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
       "360Router: TX hash and proof hash are available!!"
     );
+
     bytes32 txMIMC = Mimc.hash(
       swap.txOwner,
       swap.functionSelector,
