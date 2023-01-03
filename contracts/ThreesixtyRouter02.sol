@@ -425,15 +425,11 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     );
     bytes32 resultHash;
     for (uint256 i = 0; i < order; i++) {
-      resultHash = keccak256(abi.encodePacked(resultHash | Recorder(recorder).roundTxHashes(round, i)));
+      resultHash = keccak256(abi.encodePacked(resultHash,Recorder(recorder).roundTxHashes(round, i)));
     }
     require(
       Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
       "360Router: TX hash and proof hash are available!!"
-    );
-    require(
-      proofHash != resultHash,
-      "360Router: Signature is not valid"
     );
     bytes32 txMIMC = Mimc.hash(
       swap.txOwner,
