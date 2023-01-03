@@ -4,7 +4,7 @@ async function main() {
   const accounts = await ethers.getSigners()
 
   const amountIn = "200000000000000"
-  const routerContractAddress = "0x8D2115275d5cda62C07e2edC7484d20d7b223C1D" // ThreesixtyRouter
+  const routerContractAddress = "0x391E1912913B2921F93fd2cE5053689EfcCfBB25" // ThreesixtyRouter
   const mimcContractAddress = "0x13Ea745805D126A396A69eD4695D603D66651996"
 
   const aTokenContractAddress = "0x5E37430286E962451a0Aa2FB58528C7D82c9C33C" // UNI
@@ -117,7 +117,7 @@ async function main() {
 
   const beforeATokenBalance = await aTokenContract.balanceOf(accounts[0].address)
   const beforeBTokenBalance = await bTokenContract.balanceOf(accounts[0].address)
-  const batchSwapResult = await routerContract.batchSwap(txs, vs, rs, ss, { gasLimit: 10000000 })
+  const batchSwapResult = await routerContract.connect(accounts[2]).batchSwap(txs, vs, rs, ss, { gasLimit: 10000000 })
   await batchSwapResult.wait()
   console.log("Complete to batch swap", batchSwapResult.hash)
   const afterATokenBalance = await aTokenContract.balanceOf(accounts[0].address)

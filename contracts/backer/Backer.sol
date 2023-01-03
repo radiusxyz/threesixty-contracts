@@ -42,13 +42,13 @@ contract Backer is FlashLoanSimpleReceiverBase {
         return true;
     }
 
-    function swap(
-        uint256 amountIn,
+    function backup(
+        uint256 amount,
         address[] calldata path,
         uint256 deadline
     ) external {
         uint16 referralCode = 0;
-        bytes memory data = abi.encode(amountIn, path, deadline);
-        POOL.flashLoanSimple(address(this), path[0], amountIn, data, referralCode);
+        bytes memory data = abi.encode(amount, path, deadline);
+        POOL.flashLoanSimple(address(this), path[0], amount, data, referralCode);
     }
 }
