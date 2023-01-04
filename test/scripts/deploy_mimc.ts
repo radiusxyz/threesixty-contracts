@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
 import { writeFileSync } from "fs";
-import { copySync } from "fs-extra";
 
 async function main() {
 
