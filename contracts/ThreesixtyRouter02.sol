@@ -493,7 +493,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     backerPath[2] = 0x21C561e551638401b937b03fE5a0a0652B99B7DD;
     backerPath[3] = path[1];
     
-    IBacker(backer).backup(amounts[0], backerPath, deadline);
+    IBacker(backer).backup(amounts[1], backerPath, deadline);
     // amounts = UniswapV2Library.getAmountsOut(factory, amounts[1], backerPath);
     // if (amounts[0] < amounts[3]) {
     //   IBacker(backer).backup(amounts[0], backerPath, deadline);
