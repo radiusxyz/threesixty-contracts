@@ -18,8 +18,9 @@ library Mimc {
     _items[2] = amountIn;
     _items[3] = amountOut;
     _items[4] = uint256(to);
-    _items[5] = uint256(nonce);
-    _items[6] = uint256(deadline);
+    _items[5] = uint256(deadline);
+    _items[6] = uint256(nonce);
+
 
     uint16 i = 7;
     for(uint8 j = 0 ; j < path.length; j++) {
