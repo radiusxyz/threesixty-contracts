@@ -3,8 +3,8 @@ import { ethers } from "hardhat"
 async function main() {
   const accounts = await ethers.getSigners()
 
-  const amountIn = "200000000000000"
-  const routerContractAddress = "0x391E1912913B2921F93fd2cE5053689EfcCfBB25" // ThreesixtyRouter
+  const amountIn = "1000000000000"
+  const routerContractAddress = "0x32c65798B12c58D27E64EFbE40237aD4E0BB403d" // ThreesixtyRouter
   const mimcContractAddress = "0x59DCf65582aFef2A628fe182903F5DE9e4574B6c"
 
   const aTokenContractAddress = "0x5E37430286E962451a0Aa2FB58528C7D82c9C33C" // UNI
