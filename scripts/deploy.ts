@@ -12,6 +12,8 @@ async function main() {
 
   const poolAddressesProviderAddress = "0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6";
 
+  let usdtContract = await ethers.getContractAt("contracts/interfaces/IERC20.sol:IERC20", usdtAddress)
+
   const Backer = await ethers.getContractFactory("Backer");
   const backer = await Backer.deploy(poolAddressesProviderAddress);
   await backer.deployed();
@@ -35,7 +37,9 @@ async function main() {
   await threesixtyRouter02.setFeeTo(accounts[2].address);
 
   await vault.setOperator(threesixtyRouter02.address);
-  await vault.depositToken(ethers.utils.parseUnits('0.01', 6));
+  await usdtContract.approve(vault.address, ethers.utils.parseUnits('0.01', 6));
+  await vault.deposit(ethers.utils.parseUnits('0.01', 6));
+  await vault.pickup(ethers.utils.parseUnits('0.01', 6));
 
   const content = JSON.stringify({
     weth: wETHAddress,

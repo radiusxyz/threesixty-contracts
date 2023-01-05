@@ -447,7 +447,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       ecrecover(digest, v, r, s) == operator,
       "360Router: Claim is not accepted. Check signature"
     );
-    Vault(vault).withDrawAmount(swap.txOwner, reimbursementAmount);
+    Vault(vault).withdraw(swap.txOwner, reimbursementAmount);
     Recorder(recorder).setReimbursedTxHashes(txHash);
   }
 
