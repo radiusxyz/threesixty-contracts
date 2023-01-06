@@ -67,7 +67,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     _;
   }
 
-  event SwapEvent(uint256 round, uint256 index, bool success);
+  event SwapEvent(uint256 round, uint256 index, address userAddress, uint256 nonce, bool success);
 
   constructor(
     address _recorder,
@@ -398,7 +398,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
           }
         }
       }
-      emit SwapEvent(Recorder(recorder).currentRound(), i, success);
+      emit SwapEvent(Recorder(recorder).currentRound(), i, swap[i].txOwner, swap[i].nonce, success);
       Recorder(recorder).goForward();
     }
   }
