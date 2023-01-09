@@ -14,7 +14,7 @@ contract Vault {
         owner = msg.sender;
     }
 
-    function setOperator(address _router) external {
+    function setRouter(address _router) external {
         require(msg.sender == owner, "Vault: Not approved owner");
         router = _router;
     }
@@ -24,15 +24,13 @@ contract Vault {
         require(IERC20(tokenAddress).transferFrom(msg.sender, address(this), amount));
     }
 
+    function getDeposit() public view returns (uint256) {
+        return IERC20(tokenAddress).balanceOf(address(this));
+    }
+
     function withdraw(address to, uint256 amount) public {
         require(msg.sender == router);
         require(IERC20(tokenAddress).balanceOf(address(this)) >= amount);
         require(IERC20(tokenAddress).transfer(to, amount), "the transfer failed");
-    }
-
-    function pickup(uint256 amount) public {
-        require(msg.sender == owner);
-        require(IERC20(tokenAddress).balanceOf(address(this)) >= amount);
-        require(IERC20(tokenAddress).transfer(msg.sender, amount), "the transfer failed");
     }
 }

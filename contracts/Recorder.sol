@@ -5,7 +5,8 @@ contract Recorder {
   uint256 public currentRound;
   uint256 public currentIndex;
 
-  address public owner;
+  address public router;
+  address public operator;
 
   mapping(uint256 => bool) public isSaved;
   mapping(uint256 => bytes32[]) public roundTxHashes;
@@ -15,12 +16,18 @@ contract Recorder {
 
   event Commit(uint256 round, uint256 index);
 
-  constructor() public {
-    owner = msg.sender;
+  constructor(address _operator) public {
+    router = msg.sender;
+    operator = _operator;
   }
 
-  modifier onlyOwner() {
-    require(tx.origin == owner);
+  modifier onlyRouter() {
+    require(msg.sender == router);
+    _;
+  }
+
+  modifier onlyOperator() {
+    require(msg.sender == operator);
     _;
   }
 
@@ -29,12 +36,11 @@ contract Recorder {
     return roundTxHashes[round];
   }
 
-  function transferOwnership(address newOwner) public onlyOwner {
-    require(newOwner != address(0));
-    owner = newOwner;
+  function setOperator(address newOperator) public onlyRouter {
+    operator = newOperator;
   }
 
-  function addTxHashes(bytes32[] memory _txHashes) public onlyOwner {
+  function addTxHashes(bytes32[] memory _txHashes) public onlyOperator {
     require(!isSaved[currentRound]);
     bool result;
     for (uint256 i = 0; i < _txHashes.length; i++) {
@@ -50,12 +56,15 @@ contract Recorder {
     useOfVeto[_txHash][msg.sender] = true;
   }
 
-  function validate(bytes32 _txHash, address _txOwner) public view returns (bool) {
-    if (roundTxHashes[currentRound][currentIndex] == _txHash && useOfVeto[_txHash][_txOwner] != true) return true;
-    return false;
+  function validate(bytes32 _txHash) public view returns (bool) {
+    return (roundTxHashes[currentRound][currentIndex] == _txHash);
   }
 
-  function goForward() public onlyOwner {
+  function isDisabledTx(bytes32 _txHash, address _txOwner) public view returns (bool) {
+    return (useOfVeto[_txHash][_txOwner] == true);
+  }
+
+  function goForward() public onlyRouter {
     emit Commit(currentRound, currentIndex);
     if (roundTxHashes[currentRound].length == currentIndex + 1) {
       currentRound++;
@@ -63,7 +72,7 @@ contract Recorder {
     } else currentIndex++;
   }
 
-  function skipRound() public onlyOwner {
+  function skipRound() public onlyOperator {
     for (uint256 i = 0; i < roundTxHashes[currentRound].length; i++) {
       skippedTxHashes[roundTxHashes[currentRound][i]] = true;
     }    
@@ -71,7 +80,7 @@ contract Recorder {
     currentIndex = 0;
   }
 
-  function setReimbursedTxHashes(bytes32 _txHash) public onlyOwner {
+  function setReimbursedTxHashes(bytes32 _txHash) public onlyRouter {
     reimbursedTxHashes[_txHash] = true;
   }
 }

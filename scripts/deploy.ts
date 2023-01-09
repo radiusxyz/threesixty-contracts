@@ -19,27 +19,33 @@ async function main() {
   await backer.deployed();
   console.log("Backer deployed to:", backer.address);
 
-  const Recorder = await ethers.getContractFactory("Recorder");
-  const recorder = await Recorder.deploy();
-  await recorder.deployed();
-  console.log("Recorder deployed to:", recorder.address);
-  await recorder.transferOwnership(accounts[2].address);
-
   const Vault = await ethers.getContractFactory("Vault");
   const vault = await Vault.deploy(usdtAddress);
   console.log("Vault deployed to:", vault.address);
 
   const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
-  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(recorder.address, vault.address, factoryAddress, wETHAddress, accounts[0].address, accounts[0].address, backer.address, ethers.utils.parseUnits('0.01', 6));
+  const threesixtyRouter02 = await ThreesixtyRouter02.deploy(
+    80001, 
+    vault.address, 
+    factoryAddress, 
+    wETHAddress, 
+    accounts[0].address, 
+    accounts[0].address, 
+    backer.address, 
+    ethers.utils.parseUnits('0.01', 6)
+    );
   await threesixtyRouter02.deployed();
   console.log("360Router02 deployed to:", threesixtyRouter02.address);
   await threesixtyRouter02.setOperator(accounts[2].address);
   await threesixtyRouter02.setFeeTo(accounts[2].address);
 
-  await vault.setOperator(threesixtyRouter02.address);
-  await usdtContract.approve(vault.address, ethers.utils.parseUnits('0.01', 6));
-  await vault.deposit(ethers.utils.parseUnits('0.01', 6));
-  await vault.pickup(ethers.utils.parseUnits('0.01', 6));
+  const Recorder = await ethers.getContractFactory("Recorder");
+  const recorder = await Recorder.attach(await threesixtyRouter02.recorder());
+  console.log("Recorder deployed to:", recorder.address);
+
+  await vault.setRouter(threesixtyRouter02.address);
+  await usdtContract.approve(vault.address, ethers.utils.parseUnits('0.2', 6));
+  await vault.deposit(ethers.utils.parseUnits('0.2', 6));
 
   const content = JSON.stringify({
     weth: wETHAddress,

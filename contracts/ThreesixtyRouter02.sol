@@ -21,7 +21,6 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   address public immutable override factory;
   address public immutable override WETH;
 
-  address public immutable recorder;
   address public immutable vault;
 
   address public owner;
@@ -37,6 +36,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   mapping(address => uint256) public nonces;
 
   uint256 public reimbursementAmount;
+
+  Recorder public recorder;
 
   struct EIP712Domain {
     string  name;
@@ -70,7 +71,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   event SwapEvent(uint256 round, uint256 index, address userAddress, uint256 nonce, bool success);
 
   constructor(
-    address _recorder,
+    uint256 _chainId,
     address _vault,
     address _factory,
     address _WETH,
@@ -79,7 +80,6 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     address _backer,
     uint256 _reimbursementAmount
   ) public {
-    recorder = _recorder;
     vault = _vault;
     factory = _factory;
     WETH = _WETH;
@@ -89,10 +89,12 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     backer = _backer;
     reimbursementAmount = _reimbursementAmount;
 
+    recorder = new Recorder(msg.sender);
+
     DOMAIN_SEPARATOR = _generateHashedMessage(EIP712Domain({
       name: "Threesixty swap",
       version: "1",
-      chainId: 80001,
+      chainId: _chainId,
       verifyingContract: address(this)
     }));
   }
@@ -114,6 +116,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   function setOperator(address _operator) external {
     require(msg.sender == operatorSetter, "360: FORBIDDEN");
     operator = _operator;
+    recorder.setOperator(operator);
   }
 
   function setOperatorSetter(address _operatorSetter) external {
@@ -371,17 +374,26 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     bytes32[] memory r,
     bytes32[] memory s
   ) public returns (uint256[] memory amounts) {
-    bytes32 digest;
-    bool success = false;
+    require(
+      Vault(vault).getDeposit() >= reimbursementAmount * swap.length,
+      "360Router: Not enough deposit"
+    );
+    bytes32 txHash;
+    bool success;
     for (uint256 i = 0; i < swap.length; i++) {
       require(
         swap[i].availableFrom < now,
-        "360Router: False start "
+        "360Router: False start"
       );
     }
     for (uint256 i = 0; i < swap.length; i++) {
-      digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
-      if(ecrecover(digest, v[i], r[i], s[i]) == swap[i].txOwner && Recorder(recorder).validate(digest, swap[i].txOwner)) {
+      success = false;
+      txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
+      require(     
+        ecrecover(txHash, v[i], r[i], s[i]) == swap[i].txOwner && recorder.validate(txHash),
+        "360Router: Invalid batch tx"
+      );
+      if(!recorder.isDisabledTx(txHash, swap[i].txOwner)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
           if(swap[i].functionSelector == 0x375734d9) {
             (success,) = address(this).delegatecall(
@@ -398,14 +410,14 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
           }
         }
       }
-      emit SwapEvent(Recorder(recorder).currentRound(), i, swap[i].txOwner, swap[i].nonce, success);
-      Recorder(recorder).goForward();
+      emit SwapEvent(recorder.currentRound(), i, swap[i].txOwner, swap[i].nonce, success);
+      recorder.goForward();
     }
   }
 
   function disableTxHash(bytes32 _txHash) public {
     nonces[msg.sender]++;
-    Recorder(recorder).disableTxHash(_txHash);
+    recorder.disableTxHash(_txHash);
   }
 
   function claim(
@@ -420,15 +432,15 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     //claim 성공하면 token은 txowner 에게 전달되어야함
     bytes32 txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap)));
     require(
-      Recorder(recorder).reimbursedTxHashes(txHash) != true,
+      !recorder.reimbursedTxHashes(txHash),
       "360Router: Reimbursed TX!!"
     );
     bytes32 resultHash;
     for (uint256 i = 0; i < order; i++) {
-      resultHash = keccak256(abi.encodePacked(resultHash,Recorder(recorder).roundTxHashes(round, i)));
+      resultHash = keccak256(abi.encodePacked(resultHash,recorder.roundTxHashes(round, i)));
     }
     require(
-      Recorder(recorder).roundTxHashes(round, order) != txHash || proofHash != resultHash,
+      recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash,
       "360Router: TX hash and proof hash are available!!"
     );
 
@@ -448,7 +460,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       "360Router: Claim is not accepted. Check signature"
     );
     Vault(vault).withdraw(swap.txOwner, reimbursementAmount);
-    Recorder(recorder).setReimbursedTxHashes(txHash);
+    recorder.setReimbursedTxHashes(txHash);
   }
 
   function swapExactTokensForTokens(
