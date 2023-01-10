@@ -32,10 +32,14 @@ jobs:
         with:
           wildecard: "^"
         env:
+          ^MUMBAI_URL: ${{ secrets.MUMBAI_URL }}
+          ^PRIV_KEY0: ${{ secrets.PRIV_KEY0 }}
+          ^PRIV_KEY1: ${{ secrets.PRIV_KEY1 }}
+          ^PRIV_KEY2: ${{ secrets.PRIV_KEY2 }}
           ^POLYGON_URL: ${{ secrets.POLYGON_URL }}
           ^PRIV_R1: ${{ secrets.PRIV_R1 }}
           ^PRIV_R2: ${{ secrets.PRIV_R2 }}
-          ^PRIV_R3: ${{ secrets.PRIV_R3 }}
+          ^PRIV_R3: ${{ secrets.PRIV_R3 }}     
 
       - name: deploy contracts
         run: npx hardhat run scripts/deploy.ts --network polygon
