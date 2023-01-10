@@ -1,13 +1,13 @@
 
-name: CI-MAIN
+name: CI-DEV
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,13 +32,13 @@ jobs:
         with:
           wildecard: "^"
         env:
-          ^POLYGON_URL: ${{ secrets.POLYGON_URL }}
-          ^PRIV_R1: ${{ secrets.PRIV_R1 }}
-          ^PRIV_R2: ${{ secrets.PRIV_R2 }}
-          ^PRIV_R3: ${{ secrets.PRIV_R3 }}
+          ^MUMBAI_URL: ${{ secrets.MUMBAI_URL }}
+          ^PRIV_KEY0: ${{ secrets.PRIV_KEY0 }}
+          ^PRIV_KEY1: ${{ secrets.PRIV_KEY1 }}
+          ^PRIV_KEY2: ${{ secrets.PRIV_KEY2 }}
 
       - name: deploy contracts
-        run: npx hardhat run scripts/deploy.ts --network polygon
+        run: npx hardhat run scripts/deploy.ts --network mumbai
 
       - uses: JS-DevTools/npm-publish@v1
         with:

@@ -32,6 +32,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   address public operatorSetter;
 
   address public immutable backer;
+  address public middleAddress;
 
   mapping(address => uint256) public nonces;
 
@@ -123,6 +124,11 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     require(msg.sender == operatorSetter || msg.sender == owner, "360: FORBIDDEN");
     operatorSetter = _operatorSetter;
   }
+
+  function setMiddleAddress(address _middleAddress) external {
+    require(msg.sender == operator, "360: FORBIDDEN");
+    middleAddress = _middleAddress;
+  }  
 
   function _generateHashedMessage(EIP712Domain memory eip712Domain) internal pure returns (bytes32) {
     return keccak256(abi.encode(

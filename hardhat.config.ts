@@ -44,7 +44,7 @@ const config: HardhatUserConfig = {
     artifacts: "./artifacts"
   },
   networks: {
-    matic_mumbai: {
+    mumbai: {
       url: process.env.MUMBAI_URL || "",
       accounts: [
         process.env.PRIV_KEY0 as any,
@@ -53,6 +53,15 @@ const config: HardhatUserConfig = {
       ],
       gas: 10000000,
     },
+    polygon: {
+      url: process.env.POLYGON_URL || "",
+      accounts: [
+        process.env.PRIV_R1 as any,
+        process.env.PRIV_R2 as any,
+        process.env.PRIV_R3 as any,
+      ],
+      gas: 10000000,
+    }
   },
 };
 
