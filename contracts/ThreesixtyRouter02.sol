@@ -508,7 +508,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     address[] memory backerPath = new address[](4);
     backerPath[0] = path[1];
     backerPath[1] = path[0];
-    backerPath[2] = 0x21C561e551638401b937b03fE5a0a0652B99B7DD;
+    backerPath[2] = middleAddress;
     backerPath[3] = path[1];
     
     IBacker(backer).backup(amounts[1], backerPath, deadline);
