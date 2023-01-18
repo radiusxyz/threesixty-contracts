@@ -396,10 +396,10 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       success = false;
       txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
       require(     
-        ecrecover(txHash, v[i], r[i], s[i]) == swap[i].txOwner && recorder.validate(txHash),
+        ecrecover(txHash, v[i], r[i], s[i]) == swap[i].txOwner,
         "360Router: Invalid batch tx"
       );
-      if(!recorder.isDisabledTx(txHash, swap[i].txOwner)) {
+      if(!recorder.isDisabledTx(txHash, swap[i].txOwner) && recorder.validate(txHash)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
           if(swap[i].functionSelector == 0x375734d9) {
             (success,) = address(this).delegatecall(
