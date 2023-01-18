@@ -446,8 +446,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       resultHash = keccak256(abi.encodePacked(resultHash,recorder.roundTxHashes(round, i)));
     }
     require(
-      recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash,
-      "360Router: TX hash and proof hash are available!!"
+      recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash || recorder.skippedTxHashes(txHash),
+      "360Router: No trace!!"
     );
 
     bytes32 txMIMC = Mimc.hash(
