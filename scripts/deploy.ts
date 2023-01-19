@@ -11,9 +11,11 @@ async function main() {
   const wETHAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
   let usdtAddress = "0x21C561e551638401b937b03fE5a0a0652B99B7DD";
   let poolAddressesProviderAddress = "0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6";
+  let middleAddress = "0x21C561e551638401b937b03fE5a0a0652B99B7DD"  //usdt
   if (networkId == 137) {
     usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
     poolAddressesProviderAddress = "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb";
+    middleAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"  //usdc
   }
 
   let usdtContract = await ethers.getContractAt("contracts/interfaces/IERC20.sol:IERC20", usdtAddress)
@@ -40,10 +42,9 @@ async function main() {
     );
   await threesixtyRouter02.deployed();
   console.log("360Router02 deployed to:", threesixtyRouter02.address);
-  await threesixtyRouter02.setMiddleAddress(usdtAddress);
   await threesixtyRouter02.setOperator(accounts[2].address);
   await threesixtyRouter02.setFeeTo(accounts[2].address);
-
+  await threesixtyRouter02.connect(accounts[2]).setMiddleAddress(usdtAddress);
 
   const Recorder = await ethers.getContractFactory("Recorder");
   const recorder = await Recorder.attach(await threesixtyRouter02.recorder());

@@ -155,184 +155,6 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     ));
   }
 
-  // **** ADD LIQUIDITY ****
-  function _addLiquidity(
-      address tokenA,
-      address tokenB,
-      uint amountADesired,
-      uint amountBDesired,
-      uint amountAMin,
-      uint amountBMin
-  ) internal virtual returns (uint amountA, uint amountB) {
-      // create the pair if it doesn't exist yet
-      if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) {
-          IUniswapV2Factory(factory).createPair(tokenA, tokenB);
-      }
-      (uint reserveA, uint reserveB) = UniswapV2Library.getReserves(factory, tokenA, tokenB);
-      if (reserveA == 0 && reserveB == 0) {
-          (amountA, amountB) = (amountADesired, amountBDesired);
-      } else {
-          uint amountBOptimal = UniswapV2Library.quote(amountADesired, reserveA, reserveB);
-          if (amountBOptimal <= amountBDesired) {
-              require(amountBOptimal >= amountBMin, 'UniswapV2Router: INSUFFICIENT_B_AMOUNT');
-              (amountA, amountB) = (amountADesired, amountBOptimal);
-          } else {
-              uint amountAOptimal = UniswapV2Library.quote(amountBDesired, reserveB, reserveA);
-              assert(amountAOptimal <= amountADesired);
-              require(amountAOptimal >= amountAMin, 'UniswapV2Router: INSUFFICIENT_A_AMOUNT');
-              (amountA, amountB) = (amountAOptimal, amountBDesired);
-          }
-      }
-  }
-  function addLiquidity(
-      address tokenA,
-      address tokenB,
-      uint amountADesired,
-      uint amountBDesired,
-      uint amountAMin,
-      uint amountBMin,
-      address to,
-      uint deadline
-  ) external virtual override ensure(deadline) returns (uint amountA, uint amountB, uint liquidity) {
-      (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
-      address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-      TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
-      TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
-      liquidity = IUniswapV2Pair(pair).mint(to);
-  }
-  function addLiquidityETH(
-      address token,
-      uint amountTokenDesired,
-      uint amountTokenMin,
-      uint amountETHMin,
-      address to,
-      uint deadline
-  ) external virtual override payable ensure(deadline) returns (uint amountToken, uint amountETH, uint liquidity) {
-      (amountToken, amountETH) = _addLiquidity(
-          token,
-          WETH,
-          amountTokenDesired,
-          msg.value,
-          amountTokenMin,
-          amountETHMin
-      );
-      address pair = UniswapV2Library.pairFor(factory, token, WETH);
-      TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
-      IWETH(WETH).deposit{value: amountETH}();
-      assert(IWETH(WETH).transfer(pair, amountETH));
-      liquidity = IUniswapV2Pair(pair).mint(to);
-      // refund dust eth, if any
-      if (msg.value > amountETH) TransferHelper.safeTransferETH(msg.sender, msg.value - amountETH);
-  }
-
-  // **** REMOVE LIQUIDITY ****
-  function removeLiquidity(
-      address tokenA,
-      address tokenB,
-      uint liquidity,
-      uint amountAMin,
-      uint amountBMin,
-      address to,
-      uint deadline
-  ) public virtual override ensure(deadline) returns (uint amountA, uint amountB) {
-      address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-      IUniswapV2Pair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
-      (uint amount0, uint amount1) = IUniswapV2Pair(pair).burn(to);
-      (address token0,) = UniswapV2Library.sortTokens(tokenA, tokenB);
-      (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
-      require(amountA >= amountAMin, 'UniswapV2Router: INSUFFICIENT_A_AMOUNT');
-      require(amountB >= amountBMin, 'UniswapV2Router: INSUFFICIENT_B_AMOUNT');
-  }
-  function removeLiquidityETH(
-      address token,
-      uint liquidity,
-      uint amountTokenMin,
-      uint amountETHMin,
-      address to,
-      uint deadline
-  ) public virtual override ensure(deadline) returns (uint amountToken, uint amountETH) {
-      (amountToken, amountETH) = removeLiquidity(
-          token,
-          WETH,
-          liquidity,
-          amountTokenMin,
-          amountETHMin,
-          address(this),
-          deadline
-      );
-      TransferHelper.safeTransfer(token, to, amountToken);
-      IWETH(WETH).withdraw(amountETH);
-      TransferHelper.safeTransferETH(to, amountETH);
-  }
-  function removeLiquidityWithPermit(
-      address tokenA,
-      address tokenB,
-      uint liquidity,
-      uint amountAMin,
-      uint amountBMin,
-      address to,
-      uint deadline,
-      bool approveMax, uint8 v, bytes32 r, bytes32 s
-  ) external virtual override returns (uint amountA, uint amountB) {
-      address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-      uint value = approveMax ? uint(-1) : liquidity;
-      IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
-      (amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline);
-  }
-  function removeLiquidityETHWithPermit(
-      address token,
-      uint liquidity,
-      uint amountTokenMin,
-      uint amountETHMin,
-      address to,
-      uint deadline,
-      bool approveMax, uint8 v, bytes32 r, bytes32 s
-  ) external virtual override returns (uint amountToken, uint amountETH) {
-      address pair = UniswapV2Library.pairFor(factory, token, WETH);
-      uint value = approveMax ? uint(-1) : liquidity;
-      IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
-      (amountToken, amountETH) = removeLiquidityETH(token, liquidity, amountTokenMin, amountETHMin, to, deadline);
-  }
-
-  // **** REMOVE LIQUIDITY (supporting fee-on-transfer tokens) ****
-  function removeLiquidityETHSupportingFeeOnTransferTokens(
-      address token,
-      uint liquidity,
-      uint amountTokenMin,
-      uint amountETHMin,
-      address to,
-      uint deadline
-  ) public virtual override ensure(deadline) returns (uint amountETH) {
-      (, amountETH) = removeLiquidity(
-          token,
-          WETH,
-          liquidity,
-          amountTokenMin,
-          amountETHMin,
-          address(this),
-          deadline
-      );
-      TransferHelper.safeTransfer(token, to, IERC20(token).balanceOf(address(this)));
-      IWETH(WETH).withdraw(amountETH);
-      TransferHelper.safeTransferETH(to, amountETH);
-  }
-  function removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(
-      address token,
-      uint liquidity,
-      uint amountTokenMin,
-      uint amountETHMin,
-      address to,
-      uint deadline,
-      bool approveMax, uint8 v, bytes32 r, bytes32 s
-  ) external virtual override returns (uint amountETH) {
-      address pair = UniswapV2Library.pairFor(factory, token, WETH);
-      uint value = approveMax ? uint(-1) : liquidity;
-      IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);
-      amountETH = removeLiquidityETHSupportingFeeOnTransferTokens(
-          token, liquidity, amountTokenMin, amountETHMin, to, deadline
-      );
-  }
-
   // **** SWAP ****
   // requires the initial amount to have already been sent to the first pair
   function _swap(
@@ -396,10 +218,10 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       success = false;
       txHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, _generateHashedMessage(swap[i])));
       require(     
-        ecrecover(txHash, v[i], r[i], s[i]) == swap[i].txOwner && recorder.validate(txHash),
+        ecrecover(txHash, v[i], r[i], s[i]) == swap[i].txOwner,
         "360Router: Invalid batch tx"
       );
-      if(!recorder.isDisabledTx(txHash, swap[i].txOwner)) {
+      if(!recorder.isDisabledTx(txHash, swap[i].txOwner) && recorder.validate(txHash)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
           if(swap[i].functionSelector == 0x375734d9) {
             (success,) = address(this).delegatecall(
@@ -446,8 +268,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       resultHash = keccak256(abi.encodePacked(resultHash,recorder.roundTxHashes(round, i)));
     }
     require(
-      recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash,
-      "360Router: TX hash and proof hash are available!!"
+      recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash || recorder.skippedTxHashes(txHash),
+      "360Router: No trace!!"
     );
 
     bytes32 txMIMC = Mimc.hash(
