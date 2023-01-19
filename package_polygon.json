@@ -1,5 +1,5 @@
 {
 	"name": "@radiusxyz/threesixty-contracts-polygon",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"files": ["contracts.json","artifacts","tokens.json"]
 }
