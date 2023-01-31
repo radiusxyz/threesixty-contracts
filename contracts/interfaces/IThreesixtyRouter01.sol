@@ -11,7 +11,8 @@ interface IThreesixtyRouter01 {
     uint256 amountOutMin,
     address[] calldata path,
     address to,
-    uint256 deadline
+    uint256 deadline,
+    bool backerIntegrity
   ) external returns (uint256[] memory amounts);
 
   function swapTokensForExactTokens(
