@@ -151,6 +151,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       keccak256(abi.encodePacked(swap.path)),
       swap.to,
       swap.nonce,
+      swap.backerIntegrity,
       swap.availableFrom,
       swap.deadline
     ));
