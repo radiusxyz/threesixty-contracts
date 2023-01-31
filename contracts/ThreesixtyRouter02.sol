@@ -55,12 +55,13 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     address[] path;
     address to;
     uint256 nonce;
+    bool backerIntegrity;
     uint256 availableFrom;
     uint256 deadline;
   }
 
   bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,uint256 availableFrom,uint256 deadline)");
+  bytes32 constant SWAPDOMAIN_TYPEHASH = keccak256("Swap(address txOwner,bytes4 functionSelector,uint256 amountIn,uint256 amountOut,address[] path,address to,uint256 nonce,bool backerIntegrity,uint256 availableFrom,uint256 deadline)");
   bytes32 constant CLAIMDOMAIN_TYPEHASH = keccak256("Claim(uint256 round,uint256 order,bytes32 mimcHash,bytes32 txHash,bytes32 proofHash)");
   bytes32 public DOMAIN_SEPARATOR;
 
@@ -186,7 +187,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     return a / b;
   }
 
-  //0x375734d9 swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)
+  //0x73a2cff1 swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256,bool)
   //0x22b58410 swapTokensForExactTokens(address,uint256,uint256,address[],address,uint256)
   //0x7ff36ab5 swapExactETHForTokens(uint256,address[],address,uint256)
   //0xfa3219d5 swapTokensForExactETH(address,uint256,uint256,address[],address,uint256)
@@ -226,13 +227,14 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
           if(swap[i].functionSelector == 0x375734d9) {
             (success,) = address(this).delegatecall(
               abi.encodeWithSignature(
-                "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256)",
+                "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256,bool)",
                 swap[i].txOwner,
                 swap[i].amountIn,
                 swap[i].amountOut,
                 swap[i].path,
                 swap[i].to,
-                swap[i].deadline
+                swap[i].deadline,
+                swap[i].backerIntegrity
               )
             );
           }
@@ -297,7 +299,8 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     uint256 amountOutMin,
     address[] calldata path,
     address to,
-    uint256 deadline
+    uint256 deadline,
+    bool backerIntegrity
   )
     external
     virtual
@@ -333,11 +336,13 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     backerPath[2] = middleAddress;
     backerPath[3] = path[1];
     
-    IBacker(backer).backup(amounts[1], backerPath, deadline);
-    // amounts = UniswapV2Library.getAmountsOut(factory, amounts[1], backerPath);
-    // if (amounts[0] < amounts[3]) {
-    //   IBacker(backer).backup(amounts[0], backerPath, deadline);
-    // }
+    if(backerIntegrity) IBacker(backer).backup(amounts[1], backerPath, deadline);
+    else {
+      amounts = UniswapV2Library.getAmountsOut(factory, amounts[1], backerPath);
+      if(amounts[0] < amounts[3]) {
+        IBacker(backer).backup(amounts[0], backerPath, deadline);
+      }
+    }
   }
 
   function swapTokensForExactTokens(
