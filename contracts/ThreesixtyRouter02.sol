@@ -151,6 +151,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       keccak256(abi.encodePacked(swap.path)),
       swap.to,
       swap.nonce,
+      swap.backerIntegrity,
       swap.availableFrom,
       swap.deadline
     ));
@@ -224,7 +225,7 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
       );
       if(!recorder.isDisabledTx(txHash, swap[i].txOwner) && recorder.validate(txHash)) {
         if(swap[i].nonce == nonces[swap[i].txOwner]++) {
-          if(swap[i].functionSelector == 0x375734d9) {
+          if(swap[i].functionSelector == 0x73a2cff1) {
             (success,) = address(this).delegatecall(
               abi.encodeWithSignature(
                 "swapExactTokensForTokens(address,uint256,uint256,address[],address,uint256,bool)",
