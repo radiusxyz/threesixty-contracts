@@ -3,6 +3,8 @@ import "@nomicfoundation/hardhat-toolbox";
 
 import "./tasks/accounts";
 import "./tasks/setMiddleToken";
+import "./tasks/getRecorder";
+import "./tasks/setOperator";
 
 import dotenv from "dotenv";
 dotenv.config();

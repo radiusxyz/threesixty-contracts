@@ -4,18 +4,17 @@ import { copySync } from "fs-extra";
 
 async function main() {
   const networkId = (await ethers.provider.getNetwork()).chainId;
-
   const accounts = await ethers.getSigners();
 
   const factoryAddress = "0x5757371414417b8c6caad45baef941abc7d3ab32"; //QuickSwap Factory
   const wETHAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270";
   let usdtAddress = "0x21C561e551638401b937b03fE5a0a0652B99B7DD";
   let poolAddressesProviderAddress = "0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6";
-  let middleAddress = "0x21C561e551638401b937b03fE5a0a0652B99B7DD"  //usdt
+  let middleTokenAddress = "0x21C561e551638401b937b03fE5a0a0652B99B7DD"  //usdt
   if (networkId == 137) {
     usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
     poolAddressesProviderAddress = "0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb";
-    middleAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"  //usdc
+    middleTokenAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"  //usdc
   }
 
   let usdtContract = await ethers.getContractAt("contracts/interfaces/IERC20.sol:IERC20", usdtAddress)
@@ -27,32 +26,43 @@ async function main() {
 
   const Vault = await ethers.getContractFactory("Vault");
   const vault = await Vault.deploy(usdtAddress);
+  await vault.deployed();
   console.log("Vault deployed to:", vault.address);
 
   const ThreesixtyRouter02 = await ethers.getContractFactory("ThreesixtyRouter02");
   const threesixtyRouter02 = await ThreesixtyRouter02.deploy(
     networkId,
-    vault.address, 
-    factoryAddress, 
-    wETHAddress, 
-    accounts[0].address, 
-    accounts[0].address, 
-    backer.address, 
+    vault.address,
+    factoryAddress,
+    wETHAddress,
+    accounts[0].address,
+    accounts[0].address,
+    backer.address,
     ethers.utils.parseUnits('0.01', 6)
     );
   await threesixtyRouter02.deployed();
   console.log("360Router02 deployed to:", threesixtyRouter02.address);
-  await threesixtyRouter02.setOperator(accounts[2].address);
-  await threesixtyRouter02.setFeeTo(accounts[2].address);
-  await threesixtyRouter02.connect(accounts[2]).setMiddleAddress(usdtAddress);
+  const tx1 = await threesixtyRouter02.setOperator(accounts[1].address);
+  await tx1.wait();
+  const tx2 = await threesixtyRouter02.setFeeTo(accounts[1].address);
+  await tx2.wait();
+  const tx3 = await threesixtyRouter02.connect(accounts[1]).setMiddleAddress(middleTokenAddress);
+  await tx3.wait();
 
   const Recorder = await ethers.getContractFactory("Recorder");
   const recorder = await Recorder.attach(await threesixtyRouter02.recorder());
   console.log("Recorder deployed to:", recorder.address);
 
-  await vault.setRouter(threesixtyRouter02.address);
-  await usdtContract.approve(vault.address, ethers.utils.parseUnits('0.2', 6));
-  await vault.deposit(ethers.utils.parseUnits('0.2', 6));
+  const tx4 = await vault.setRouter(threesixtyRouter02.address);
+  await tx4.wait();
+  const tx5 = await usdtContract.approve(vault.address, ethers.utils.parseUnits('0.2', 6));
+  await tx5.wait();
+  const tx6 = await vault.deposit(ethers.utils.parseUnits('0.2', 6));
+  await tx6.wait();
+
+  console.log("Operator: ", await threesixtyRouter02.operator());
+  console.log("MiddleToken: ", await threesixtyRouter02.middleAddress());
+  console.log("Vault has %d usdt", await usdtContract.balanceOf(vault.address));
 
   const content = JSON.stringify({
     weth: wETHAddress,
