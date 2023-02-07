@@ -5,7 +5,7 @@ pragma solidity ^0.6.12;
 import "./interfaces/IERC20.sol";
 
 contract Vault {
-    address tokenAddress;
+    address public tokenAddress;
     address public owner;
     address public router;
 
