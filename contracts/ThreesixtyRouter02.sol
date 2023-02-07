@@ -15,6 +15,8 @@ import "./interfaces/IBacker.sol";
 import "./Recorder.sol";
 import "./Vault.sol";
 
+import "hardhat/console.sol";
+
 contract ThreesixtyRouter02 is IThreesixtyRouter02 {
   using SafeMath for uint256;
 
@@ -270,6 +272,13 @@ contract ThreesixtyRouter02 is IThreesixtyRouter02 {
     for (uint256 i = 0; i < order; i++) {
       resultHash = keccak256(abi.encodePacked(resultHash,recorder.roundTxHashes(round, i)));
     }
+
+    console.log("txHash");
+    console.logBytes32(recorder.roundTxHashes(round, order));
+
+    console.log("proofHash");
+    console.logBytes32(resultHash);
+    
     require(
       recorder.roundTxHashes(round, order) != txHash || proofHash != resultHash || recorder.skippedTxHashes(txHash),
       "360Router: No trace!!"
