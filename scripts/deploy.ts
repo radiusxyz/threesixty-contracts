@@ -72,11 +72,14 @@ async function main() {
     backer: backer.address,
     vault: vault.address
   });
-  writeFileSync("deployed/contracts.json", content);
-  copySync("artifacts","deployed/artifacts");
-  if(networkId == 137) {
-    copySync("package_polygon.json","deployed/package.json");
-    copySync("tokens_polygon.json","deployed/tokens.json");
+  if(networkId == 137) {  
+    writeFileSync("deployed/polygon_main/contracts.json", content);
+    copySync("artifacts","deployed/polygon_main/artifacts");
+    copySync("tokens_polygon.json","deployed/polygon_main/tokens.json");
+  } else {
+    writeFileSync("deployed/polygon_dev/contracts.json", content);
+    copySync("artifacts","deployed/polygon_dev/artifacts");
+    copySync("tokens_mumbai.json","deployed/polygon_dev/tokens.json");
   }
 }
 
