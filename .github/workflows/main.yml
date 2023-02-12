@@ -41,8 +41,20 @@ jobs:
           ^PRIV_R2: ${{ secrets.PRIV_R2 }}
           ^PRIV_R3: ${{ secrets.PRIV_R3 }}     
 
+      - name: download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: polygon_dev
+          path: deployed
+
       - name: deploy contracts
         run: npx hardhat run scripts/deploy.ts --network polygon
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: polygon_main
+          path: deployed/polygon_main
 
       - uses: JS-DevTools/npm-publish@v1
         with:
