@@ -41,11 +41,11 @@ jobs:
           ^PRIV_R2: ${{ secrets.PRIV_R2 }}
           ^PRIV_R3: ${{ secrets.PRIV_R3 }}          
 
-      - name: download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: polygon_main
-          path: deployed
+      # - name: download artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: polygon_main
+      #     path: deployed
 
       - name: deploy contracts
         run: npx hardhat run scripts/deploy.ts --network mumbai
