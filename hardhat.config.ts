@@ -22,6 +22,15 @@ const config: HardhatUserConfig = {
         },
       },
       {
+        version: "0.6.6",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
+      },
+      {
         version: "0.6.12",
         settings: {
           optimizer: {
@@ -38,7 +47,7 @@ const config: HardhatUserConfig = {
             runs: 1000,
           },
         },
-      }    
+      },
     ],
     overrides: {},
   },
@@ -46,7 +55,7 @@ const config: HardhatUserConfig = {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./artifacts"
+    artifacts: "./artifacts",
   },
   networks: {
     mumbai: {
@@ -66,7 +75,7 @@ const config: HardhatUserConfig = {
         process.env.PRIV_R3 as any,
       ],
       gas: 10000000,
-    }
+    },
   },
 };
 
